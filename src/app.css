@@ -1,0 +1,49 @@
+:root {
+    --hot-rose: #b00b69ff;
+    --dark-raspberry: #8b0f56ff;
+    --crimson-violet: #651242ff;
+    --midnight-violet: #40152fff;
+    --midnight-violet-2: #2d1725ff;
+    --shadow-grey: #1a181bff;
+
+    --color-bg: var(--shadow-grey);
+    --color-card: var(--crimson-violet);
+    --color-btn-primary: var(--midnight-violet);
+    --color-btn-secondary: var(--midnight-violet-2);
+    --color-txt-primary: white;
+    --color-txt-secondary: gray;
+}
+
+body {
+  background-color: var(--color-bg);
+}
+
+.card {
+  background-color: var(--color-card);
+  color: var(--color-txt-primary);
+  justify-content: center;
+  width: fit-content;
+  box-shadow: 0px 8px black;
+  border-radius: 8px;
+}
+
+.btn {
+  width: 100%;
+  padding: 8px 16px;
+  background-color: var(--color-btn-primary);
+  color: var(--color-txt-primary);
+}
+
+.btn:hover {
+  background-color: var(--color-btn-primary);
+  color: var(--color-txt-primary);
+}
+
+.btn-secondary {
+  background-color: var(--color-btn-secondary);
+}
+.btn-secondary:hover {
+  background-color: var(--color-btn-secondary);
+}
+
+
