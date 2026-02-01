@@ -1,7 +1,33 @@
 <script>
   import favicon from "$lib/assets/favicon.svg";
+  import { tick } from "svelte";
+  import CommandTable from "../components/commandTable.svelte";
+  import { terminalValue, terminalHistory } from "$lib/stores.js";
+
+  import { runCmd } from "$lib/terminal/terminal";
 
   let { children } = $props();
+  let historyEl;
+  $effect(() => {
+    $terminalHistory;
+    scrollToBottom();
+  });
+
+  function handleKey(e) {
+    if (e.key === "Enter") {
+      runCmd($terminalValue);
+      terminalValue.set("");
+    }
+  }
+
+  async function scrollToBottom() {
+    await tick();
+    historyEl?.scrollTo({ top: historyEl.scrollHeight, behavior: "smooth" });
+  }
+
+  function isTable(line) {
+    return line && line.type === "table";
+  }
 </script>
 
 <svelte:head>
@@ -52,6 +78,7 @@
       width: 70%;
       display: flex;
       flex-direction: column;
+      justify-content: end;
       padding: 0;
     "
     >
@@ -59,22 +86,79 @@
       <div
         style="
         flex: 1;
-        overflow-y: auto;
-        padding: 32px 8px;
+        min-height: 0;
+        overflow: hidden;
+        position: relative;
       "
       >
-        {@render children()}
+        <!--- scrollable content --->
+        <div style="height: 100%; overflow-y: auto; padding: 32px 8px;">
+          {@render children()}
+        </div>
+
+        <!--- glass history overlay, anchored to bottom --->
+        {#if $terminalHistory.length > 0}
+          <div
+            class="terminal"
+            bind:this={historyEl}
+            style="
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              max-height: 50%;
+              overflow: scroll;
+              scrollbar-width: none;
+              padding: 8px;
+              background-color: rgba(26, 24, 27, 0.55);
+              backdrop-filter: blur(2px);
+              border-top: 1px solid rgba(255, 255, 255, 0.15);
+            "
+          >
+            {#each $terminalHistory as line}
+              {#if isTable(line)}
+                <div style="display: flex; flex-direction: column; gap: 0 16px; padding: 2px 0;">
+                  {#each line.rows as row}
+                    <div style="display: flex; flex-wrap: nowrap;">
+                    <div style="margin-left: 5%;"></div>
+                      {#each row as col, i}
+
+                        <span
+                          class="terminal"
+                          style="
+                          {(i % 3) === 0? 'flex: 2 3 5%' : ''}
+                          {(i % 3) === 1? 'flex: 1 6 5%' : ''}
+                          {(i % 3) === 2? 'flex: 9 1 5%' : ''}
+                          ">{col}</span
+                        >
+                      {/each}
+                    </div>
+                  {/each}
+                </div>
+              {:else}
+                <div class="terminal">{line}</div>
+              {/if}
+            {/each}
+          </div>
+        {/if}
       </div>
 
       <!--- terminal --->
-      <div class="terminal" style="display: flex; background-color: #333;">
+      <div
+        class="terminal input"
+        style="display: flex; background-color: #333;"
+      >
         <input
           type="text"
           style="
+            padding: 2px;
             flex: 1; 
             background: none; 
             border: none; 
             color: var(--color-txt-primary);"
+          value={$terminalValue}
+          oninput={(e) => terminalValue.set(e.target.value)}
+          onkeydown={handleKey}
         />
       </div>
     </div>
@@ -88,29 +172,7 @@
       overflow-y: auto;
     "
     >
-      <table>
-        <thead>
-          <tr>
-            <td>Command</td>
-            <td>Def</td>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td>test.test --help</td>
-            <td>test.test --help</td>
-          </tr>
-          <tr>
-            <td>test.test --help</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>test.test --help</td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
+      <CommandTable />
     </div>
   </div>
 </div>
