@@ -1,0 +1,66 @@
+[
+  {
+    "title": "E-Commerce Platforma",
+    "description": "A full-stack online shopping platform with payment integration and inventory management.Lorem ipsuLorem ipsum, dolor sit amet consectetur adipisicing elit. Unde beatae, iure aliquid odio id ratione, ullam deleniti nam maiores quas vitae aut adipisciipsam earum commodi officia necessitatm, dolor sit amet consectetur adipisicing elit. Unde beatae, iure aliquid odio id ratione, ullam deleniti nam maiores quas vitae aut adipisciipsam earum commodi officia necessitatibus sint. Iusto!",
+    "image": "/images/wallpaper.png",
+    "image_alt": "E-commerce Platform Img",
+    "tags": ["React", "Node.js", "MongoDB"],
+    "link": "/projects/ecommerce"
+  },
+  {
+    "title": "Weather Dashboard",
+    "description": "Real-time weather tracking application with interactive maps and forecasts.",
+    "image": "/images/wallpaper.png",
+    "image_alt": "Weather Dashboard Img",
+    "tags": ["Svelte", "API", "Charts"],
+    "link": "/projects/weather"
+  },
+  {
+    "title": "Task Manager",
+    "description": "Collaborative task management tool with team features and deadline tracking.",
+    "image": "/images/wallpaper.png",
+    "image_alt": "Task Manager Img",
+    "tags": ["Vue", "Firebase", "PWA"],
+    "link": "/projects/tasks"
+  },
+  {
+    "title": "Portfolio Site",
+    "description": "Modern portfolio website with smooth animations and responsive design.",
+    "image": "/images/wallpaper.png",
+    "image_alt": "Portfolio Img",
+    "tags": ["HTML", "CSS", "JavaScript"],
+    "link": "/projects/portfolio"
+  },
+  {
+    "title": "E-Commerce Platform",
+    "description": "A full-stack online shopping platform with payment integration and inventory management.",
+    "image": "/images/wallpaper.png",
+    "image_alt": "E-commerce Platform Img",
+    "tags": ["React", "Node.js", "MongoDB"],
+    "link": "/projects/ecommerce"
+  },
+  {
+    "title": "Weather Dashboard",
+    "description": "Real-time weather tracking application with interactive maps and forecasts.",
+    "image": "/images/wallpaper.png",
+    "image_alt": "Weather Dashboard Img",
+    "tags": ["Svelte", "API", "Charts"],
+    "link": "/projects/weather"
+  },
+  {
+    "title": "Task Manager",
+    "description": "Collaborative task management tool with team features and deadline tracking.",
+    "image": "/images/wallpaper.png",
+    "image_alt": "Task Manager Img",
+    "tags": ["Vue", "Firebase", "PWA"],
+    "link": "/projects/tasks"
+  },
+  {
+    "title": "Portfolio Site",
+    "description": "Modern portfolio website with smooth animations and responsive design.",
+    "image": "/images/wallpaper.png",
+    "image_alt": "Portfolio Img",
+    "tags": ["HTML", "CSS", "JavaScript"],
+    "link": "/projects/portfolio"
+  }
+]
