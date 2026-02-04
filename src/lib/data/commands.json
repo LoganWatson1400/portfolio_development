@@ -1,34 +1,62 @@
-[
-  {
-    "command": "help",
-    "definition": "Show a list of available commands"
+{
+  "pages": {
+    "/": {
+      "title": "Home",
+      "route": "~",
+      "description": "Welcome to the site"
+    },
+    "about": {
+      "title": "About Me",
+      "route": "about",
+      "description": "Learn more about me"
+    },
+    "projects": {
+      "title": "Projects",
+      "route": "projects",
+      "description": "My recent work and projects"
+    },
+    "skills": {
+      "title": "Skills",
+      "route": "skills",
+      "description": "Technologies I work with"
+    },
+    "experience": {
+      "title": "Experience",
+      "route": "experience",
+      "description": "Work history and education"
+    },
+    "contact": {
+      "title": "Contact",
+      "route": "contact",
+      "description": "Get in touch with me"
+    }
   },
-  {
-    "command": "about",
-    "definition": "Display a short introduction about me"
-  },
-  {
-    "command": "skills",
-    "definition": "List my technical skills and tools"
-  },
-  {
-    "command": "projects",
-    "definition": "Show featured projects with links"
-  },
-  {
-    "command": "experience",
-    "definition": "View my work and education history"
-  },
-  {
-    "command": "contact",
-    "definition": "Show ways to get in touch with me"
-  },
-  {
-    "command": "resume",
-    "definition": "Download or view my resume"
-  },
-  {
-    "command": "clear",
-    "definition": "Clear the terminal screen"
-  }
-]
+
+  "commands": [
+    {
+      "command": "help",
+      "description": "Show available commands",
+      "usage": "help [command]"
+    },
+    {
+      "command": "ls",
+      "description": "List available pages (verbose)",
+      "usage": "ls"
+    },
+    {
+      "command": "cd",
+      "description": "Navigate to a page",
+      "usage": "cd <page>"
+    },
+    {
+      "command": "clear",
+      "description": "Clear the terminal",
+      "usage": "clear"
+    },
+    {
+      "command": "whoami",
+      "description": "Show information about the portfolio owner",
+      "usage": "whoami"
+    }
+  ]
+}

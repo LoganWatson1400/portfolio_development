@@ -1,6 +1,7 @@
 <script>
   import favicon from "$lib/assets/favicon.svg";
-  import { tick } from "svelte";
+  import { tick, onMount } from "svelte";
+  import { afterNavigate } from "$app/navigation";
   import CommandTable from "../components/commandTable.svelte";
   import { terminalValue, terminalHistory } from "$lib/stores.js";
 
@@ -8,6 +9,14 @@
 
   let { children } = $props();
   let historyEl;
+  let inputEl; 
+
+  afterNavigate(() => {
+    setTimeout(() => {
+      inputEl?.focus();
+    }, 50);
+  });
+
   $effect(() => {
     $terminalHistory;
     scrollToBottom();
@@ -54,7 +63,7 @@
   "
   >
     <div style="display: flex; justify-content: space-between;">
-      <h1>Logan Watson:</h1>
+      <h1 style="font-size: clamp(0.5rem, 2vw + 8px, 3rem)">Logan Watson:</h1>
       <h1>Root</h1>
     </div>
     <hr style="height: 1px; background-color: white;" />
@@ -149,13 +158,18 @@
         style="display: flex; background-color: #333;"
       >
         <input
+          bind:this={inputEl}
           type="text"
+          autofocus
           style="
             padding: 2px;
             flex: 1; 
             background: none; 
             border: none; 
-            color: var(--color-txt-primary);"
+            color: var(--color-txt-primary);
+            outline: none;
+            font-size: clamp(0.5rem, 1vw + 8px, 3rem)
+            "
           value={$terminalValue}
           oninput={(e) => terminalValue.set(e.target.value)}
           onkeydown={handleKey}
@@ -172,7 +186,7 @@
       overflow-y: auto;
     "
     >
-      <CommandTable />
+      <CommandTable run={async (cmd) => { terminalValue.set(cmd); await runCmd(cmd); terminalValue.set(''); inputEl?.focus(); }} />
     </div>
   </div>
 </div>

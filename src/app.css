@@ -130,11 +130,19 @@ table {
 
 .terminal.input::before {
   padding: 0px 4px 0px 8px;
+  font-size: clamp(0.5rem, 1vw + 8px, 3rem);
   content: ">";
 }
 
 .terminal.input input:focus {
   border: none;
   outline: none;
+}
+
+@media (max-width: 930px) {
+  .command__description {
+    display: none;
+    background-color: blue;
+  }
 }
 
