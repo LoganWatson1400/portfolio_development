@@ -8,6 +8,7 @@
 
   --color-bg: var(--shadow-grey);
   --color-card: var(--crimson-violet);
+  --color-card-secondary: var(--midnight-violet);
   --color-card-border: white;
   --color-btn-primary: var(--midnight-violet);
   --color-btn-secondary: var(--midnight-violet-2);
@@ -24,7 +25,7 @@
   box-sizing: border-box;
 }
 
-a{
+a {
   text-decoration: none;
   color: var(--color-txt-primary);
 }
@@ -51,11 +52,11 @@ table {
 }
 
 ::-webkit-scrollbar {
-  width: 6px;               
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.08);
+  background: rgba(0, 0, 0, 0.08);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -78,9 +79,14 @@ table {
   color: var(--color-txt-primary);
   justify-content: center;
   width: fit-content;
-  box-shadow: 0px 8px black;
+  box-shadow: 2px 4px black;
   border-radius: 8px;
 }
+
+.card.secondary {
+  background-color: var(--color-card-secondary); 
+}
+
 
 .btn {
   width: 100%;
@@ -111,21 +117,21 @@ table {
 
 .btn-command:hover {
   margin: 0px;
-  background-color: #222; 
+  background-color: #222;
   color: var(--color-txt-primary);
 }
 
-.btn-command:active{
+.btn-command:active {
   background-color: var(--color-btn-secondary);
   color: var(--color-txt-primary);
 }
 
 .terminal {
-    padding: 2px;
-    font-family: monospace;
-    white-space: pre;
-    text-wrap: wrap;
-    color: var(--color-txt-primary);
+  padding: 2px;
+  font-family: monospace;
+  white-space: pre;
+  text-wrap: wrap;
+  color: var(--color-txt-primary);
 }
 
 .terminal.input::before {
@@ -139,10 +145,21 @@ table {
   outline: none;
 }
 
+.divider.white {
+  height: 1px;
+  background-color: white;
+  width: 100%;
+}
+
+.divider.gray{
+  height: 1px;
+  background-color: gray;
+  width: 100%;
+}
+
 @media (max-width: 930px) {
   .command__description {
     display: none;
     background-color: blue;
   }
 }
-

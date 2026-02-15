@@ -1,4 +1,5 @@
 import commandList from "$lib/data/commands.json";
+import projectsData from "$lib/data/projects.json";
 import { goto } from "$app/navigation";
 import { terminalHistory } from "$lib/stores.js";
 
@@ -101,6 +102,22 @@ async function handleCd(args) {
     return "Navigating to home...";
   }
 
+  const fullPath = args.join(" ");
+  
+  // Check if it's a dynamic project route (e.g., "projects/weatherdashboard")
+  if (fullPath.startsWith("projects/")) {
+    const projectSlug = fullPath.split("/")[1];
+    const project = projectsData.projects.find(p => p.route === projectSlug);
+    
+    if (!project) {
+      return formatTemplate("Project not found: {project}. Type 'cd projects' to see available projects.", { project: projectSlug });
+    }
+    
+    currentPage = `/projects/${projectSlug}`;
+    await goto(`/projects/${projectSlug}`);
+    return `Opening ${project.title}...`;
+  }
+
   // Find the page by key or title
   const pageName = args[0].toLowerCase();
   const pageEntry = Object.entries(commandList.pages).find(([key, p]) => {
@@ -128,4 +145,4 @@ function handleWhoami() {
     "Type 'ls' to see available pages or 'help' for commands."
   ];
   return lines.join("\n");
-} 
+}
