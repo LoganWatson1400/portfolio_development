@@ -108,6 +108,14 @@ table {
   background-color: var(--color-btn-secondary);
 }
 
+.btn-light{
+  background-color: lightgray;
+}
+
+.btn-light:hover {
+  background-color: var(--color-txt-secondary);
+}
+
 .btn-command {
   background: none;
   border: none;

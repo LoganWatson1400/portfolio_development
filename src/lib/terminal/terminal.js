@@ -3,26 +3,72 @@ import projectsData from "$lib/data/projects.json";
 import { goto } from "$app/navigation";
 import { terminalHistory } from "$lib/stores.js";
 
-function formatTemplate(template, vars = {}) {
-  return template.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? `{${k}}`);
-}
+class Stack {
+  constructor() { this.items = ["/"]; }
 
-let currentPage = "/";
+  // Push operation
+  push(element) { this.items.push(element); }
+
+  // Pop operation
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.items.pop();
+  }
+
+  // Peek operation
+  peek() {
+    if (this.isEmpty()) {
+      return "/";
+    }
+    return this.items[this.items.length - 1];
+  }
+
+  clear() {
+    this.items = ["/"]
+  }
+
+  toArr() {
+    if (this.isEmpty()) return ["/"];
+    return [...this.items];
+  }
+
+  toString() {
+    if (this.isEmpty()) return "";
+    return "/" + this.toArr().join("/");
+  }
+
+  // isEmpty operation
+  isEmpty() { return this.items.length === 1; }
+
+  // Size operation
+  size() { return this.items.length; }
+}
+const pathStack = new Stack();
+
+const navigateToProject = (project) => {
+  goto(`/projects/${project.route}`);
+};
+
+
 
 export async function runCmd(input) {
   const command = input.trim();
   if (!command) return;
 
+
   terminalHistory.update((h) => [...h, `> ${command}`]);
 
   const output = await execute(command);
-
   if (output === "__CLEAR__") {
-    terminalHistory.set([]); 
+    terminalHistory.set([]);
   } else {
+
     terminalHistory.update((h) => [...h, output]);
   }
 }
+
 
 async function execute(command) {
   const parts = command.split(/\s+/).filter(Boolean);
@@ -32,10 +78,9 @@ async function execute(command) {
   const foundCmd = commandList.commands.find((c) => c.command === cmd);
 
   if (!foundCmd) {
-    return formatTemplate("Command not found: {command}. Type 'help' for available commands.", { command: cmd });
+    return `Command not found: ${cmd}. Type 'help' for available commands.`;
   }
 
-  // Global --help: always return usage
   if (args.includes("--help")) {
     return foundCmd.usage || "";
   }
@@ -44,17 +89,22 @@ async function execute(command) {
     case "help":
       return handleHelp(args);
     case "ls":
-      return handleLs(); // always verbose
+      return handleLs();
+    case "cat":
+      return handleCat(args);
     case "cd":
       return handleCd(args);
     case "clear":
       return "__CLEAR__";
     case "whoami":
       return handleWhoami();
+    case "pwd":
+      return handlePwd();
     default:
       return `${cmd}: command not implemented`;
   }
 }
+
 
 function handleHelp(args) {
   if (args.length === 0) {
@@ -62,31 +112,48 @@ function handleHelp(args) {
       "Available commands: (or click any on the right)",
       "Also try clicking the commands in the right column",
       "",
-      ...commandList.commands.map((c) => `  ${c.command.padEnd(8)} - ${c.description}`)
+      ...commandList.commands.map(
+        (c) => `  ${c.command.padEnd(8)} - ${c.description}`,
+      ),
     ];
     return lines.join("\n");
+
   } else {
     const cmdName = args[0].toLowerCase();
     const cmd = commandList.commands.find((c) => c.command === cmdName);
-
     if (!cmd) {
       return `help: no help topics match '${cmdName}'`;
     }
-
-    // Per request: help <cmd> prints description only
     return `${cmd.command} - ${cmd.description}`;
   }
 }
 
+function getCurrentDir(pathArr) {
+  let current = commandList;
+
+  for (const segment of pathArr) {
+    if (!current || !(segment in current)) return null;
+    current = current[segment];
+  }
+  return current;
+}
+
 function handleLs() {
   const lines = ["Available pages:", ""];
+  const currentDir = getCurrentDir(pathStack.toArr());
 
-  Object.entries(commandList.pages).forEach(([key, page]) => {
-    if (key === "/") return; // Skip root in listing
-    const desc = page.description || "";
-    lines.push(`  ${page.title.padEnd(20)} ${page.route} ${desc}`);
+  if (!currentDir) {
+    return "Current directory not found";
+  }
+
+  const children = Object.keys(currentDir);
+
+  children.forEach((child) => {
+    const item = currentDir[child];
+    const marker = item && typeof item === "object" ? "/" : "";
+    const description = typeof item === "string" ? item : item.description || "";
+    lines.push(`  ${child.padEnd(20)} ${marker.padEnd(2)} ${description}`);
   });
-
   return lines.join("\n");
 }
 
@@ -96,44 +163,29 @@ async function handleCd(args) {
     return cmd?.usage;
   }
 
-  if (args[0] === "~" || args[0] === "..") {
-    currentPage = "/";
-    await goto("/");
-    return "Navigating to home...";
+  switch (args[0]) {
+    case "~":
+      pathStack.clear();
+      await goto(pathStack.toString());
+      return `Navigating Home`;
+    case "..":
+      pathStack.pop();
+      await goto(pathStack.toString());
+      return `Navigating to ${pathStack.peek()}`;
+    default:
+      {
+        const currentDir = getCurrentDir(pathStack.toArr());
+
+        if (!currentDir || !(args[0] in currentDir)) {
+          return `Page not found: ${args[0]}. Type 'ls' to see available pages.`;
+        }
+
+        pathStack.push(args[0]);
+        await goto(pathStack.toString());
+        return `${pathStack.toString()} Navigating to ${args[0]}...`;
+      }
   }
 
-  const fullPath = args.join(" ");
-  
-  // Check if it's a dynamic project route (e.g., "projects/weatherdashboard")
-  if (fullPath.startsWith("projects/")) {
-    const projectSlug = fullPath.split("/")[1];
-    const project = projectsData.projects.find(p => p.route === projectSlug);
-    
-    if (!project) {
-      return formatTemplate("Project not found: {project}. Type 'cd projects' to see available projects.", { project: projectSlug });
-    }
-    
-    currentPage = `/projects/${projectSlug}`;
-    await goto(`/projects/${projectSlug}`);
-    return `Opening ${project.title}...`;
-  }
-
-  // Find the page by key or title
-  const pageName = args[0].toLowerCase();
-  const pageEntry = Object.entries(commandList.pages).find(([key, p]) => {
-    const keyMatch = key.toLowerCase() === pageName;
-    const titleMatch = (p.title || "").toLowerCase() === pageName;
-    return keyMatch || titleMatch;
-  });
-  const page = pageEntry?.[1];
-
-  if (!page) {
-    return formatTemplate("Page not found: {page}. Type 'ls' to see available pages.", { page: pageName });
-  }
-
-  currentPage = page.route;
-  await goto(page.route);
-  return `Navigating to ${page.title}...`;
 }
 
 function handleWhoami() {
@@ -142,7 +194,11 @@ function handleWhoami() {
     `Role: Full Stack Developer`,
     `Location: Your City`,
     "",
-    "Type 'ls' to see available pages or 'help' for commands."
+    "Type 'ls' to see available pages or 'help' for commands.",
   ];
   return lines.join("\n");
+}
+
+function handlePwd() {
+  return pathStack.toString();
 }

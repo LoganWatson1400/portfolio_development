@@ -1,12 +1,12 @@
 [
   {
     "title": "E-Commerce Platforma",
-    "route": "projects/ecommerceplatform",
+    "route": "ecommerceplatform",
     "description": "A full-stack online shopping platform with payment integration and inventory management.Lorem ipsuLorem ipsum, dolor sit amet consectetur adipisicing elit. Unde beatae, iure aliquid odio id ratione, ullam deleniti nam maiores quas vitae aut adipisciipsam earum commodi officia necessitatm, dolor sit amet consectetur adipisicing elit. Unde beatae, iure aliquid odio id ratione, ullam deleniti nam maiores quas vitae aut adipisciipsam earum commodi officia necessitatibus sint. Iusto!",
     "image": "/img/tmp.png",
     "image_alt": "E-commerce Platform Img",
     "tags": ["React", "Node.js", "MongoDB"],
-    "link": "/projects/ecommerce"
+    "link": "ecommerce"
   },
   {
     "title": "Weather Dashboard",
@@ -15,7 +15,7 @@
     "image": "/img/tmp.png",
     "image_alt": "Weather Dashboard Img",
     "tags": ["Svelte", "API", "Charts"],
-    "link": "/projects/weather"
+    "link": "weather"
   },
   {
     "title": "Task Manager",
@@ -24,7 +24,7 @@
     "image": "/img/tmp.png",
     "image_alt": "Task Manager Img",
     "tags": ["Vue", "Firebase", "PWA"],
-    "link": "/projects/tasks"
+    "link": "tasks"
   },
   {
     "title": "Portfolio Site",
@@ -33,7 +33,7 @@
     "image": "",
     "image_alt": "Portfolio Img",
     "tags": ["HTML", "CSS", "JavaScript"],
-    "link": "/projects/portfolio"
+    "link": "portfolio"
   },
   {
     "title": "E-Commerce Platform",
@@ -42,7 +42,7 @@
     "image": "",
     "image_alt": "E-commerce Platform Img",
     "tags": ["React", "Node.js", "MongoDB"],
-    "link": "/projects/ecommerce"
+    "link": "ecommerce"
   },
   {
     "title": "Weather Dashboard",
@@ -51,7 +51,7 @@
     "image": "",
     "image_alt": "Weather Dashboard Img",
     "tags": ["Svelte", "API", "Charts"],
-    "link": "/projects/weather"
+    "link": "weather"
   },
   {
     "title": "Task Manager",
@@ -60,7 +60,7 @@
     "image": "",
     "image_alt": "Task Manager Img",
     "tags": ["Vue", "Firebase", "PWA"],
-    "link": "/projects/tasks"
+    "link": "tasks"
   },
   {
     "title": "Portfolio Site",
@@ -69,6 +69,6 @@
     "image": "",
     "image_alt": "Portfolio Img",
     "tags": ["HTML", "CSS", "JavaScript"],
-    "link": "/projects/portfolio"
+    "link": "portfolio"
   }
 ]

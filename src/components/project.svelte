@@ -1,4 +1,8 @@
 <script>
+  import { goto } from '$app/navigation';
+  import { terminalValue } from "$lib/stores.js";
+  import { runCmd } from "$lib/terminal/terminal";
+  
   export let project = {
     title: "Default Project",
     route: "",
@@ -8,10 +12,19 @@
     tags: [],
     link: "#",
   };
-
-  import { terminalValue } from "$lib/stores.js";
-  import { runCmd } from "$lib/terminal/terminal";
-  export let run = async (cmd) => { terminalValue.set(cmd); await runCmd(cmd); terminalValue.set(''); };
+  
+  export let run = async (cmd) => {
+    terminalValue.set(cmd);
+    await runCmd(cmd);
+    terminalValue.set("");
+  };
+  
+  // Function to navigate to project detail page
+  const navigateToProject = () => {
+    // Extract slug from route (removes 'projects/' prefix if present)
+    const slug = project.route.replace(/^projects\//, '');
+    goto(`/projects/${slug}`);
+  };
 </script>
 
 <div
@@ -29,21 +42,31 @@
     overflow: hidden;
     "
 >
-  <div style="display: flex;">
-    <h1 style="height: 20%; text-align: center; margin: 8px 0px;">
+  <div
+    style="display: flex; justify-content: space-between; width: 100%; padding: 0px 16px;"
+  >
+    <h1 style="height: 20%; width: 80%; text-align: center; margin: 8px 0px;">
       {project.title}
     </h1>
     {#if project.route != ""}
       <button
-        class="button-secondary"
-        onclick={() => run("cd " + project.route)}
+        class="btn-light"
+        style="
+          height: fit-content; 
+          width: fit-content; 
+          padding: 16px; 
+          align-self: center;
+        "
+        onclick={navigateToProject}
       >
-        <img src="/img/menue.svg" alt="{project.title} Details Button" />
+        <img
+          src="/img/menu.svg"
+          style=""
+          alt="{project.title} Details Button"
+        />
       </button>
-      
     {/if}
   </div>
-
   <hr class="divider white" />
   <div style="width: 100%; height: 50%; margin: 0px 2px">
     {#if project.image == ""}

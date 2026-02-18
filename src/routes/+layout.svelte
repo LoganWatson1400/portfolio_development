@@ -8,6 +8,7 @@
   import { runCmd } from "$lib/terminal/terminal";
 
   
+  let {children} = $props();
   let historyEl;
   let inputEl; 
 
@@ -102,7 +103,7 @@
       >
         <!--- scrollable content --->
         <div style="height: 100%; overflow-y: auto; padding: 32px 8px;">
-          <slot />
+          {@render children()}
         </div>
 
         <!--- glass history overlay, anchored to bottom --->

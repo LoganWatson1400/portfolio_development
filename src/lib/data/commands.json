@@ -1,37 +1,43 @@
 {
-  "pages": {
-    "/": {
-      "title": "Home",
-      "route": "~",
-      "description": "Welcome to the site"
-    },
-    "about": {
-      "title": "About Me",
-      "route": "about",
-      "description": "Learn more about me"
-    },
-    "projects": {
-      "title": "Projects",
-      "route": "projects",
-      "description": "My recent work and projects"
-    },
-    "skills": {
-      "title": "Skills",
-      "route": "skills",
-      "description": "Technologies I work with"
-    },
-    "experience": {
-      "title": "Experience",
-      "route": "experience",
-      "description": "Work history and education"
-    },
-    "contact": {
-      "title": "Contact",
-      "route": "contact",
-      "description": "Get in touch with me"
+  "/": {
+    "pages": {
+      "home": {
+        "description": "Welcome to the site"
+      },
+      "about": {
+        "description": "Learn more about me"
+      },
+      "skills": {
+        "description": "Technologies I work with"
+      },
+      "experience": {
+        "description": "My work and education history"
+      },
+      "contact": {
+        "description": "Get in touch with me"
+      },
+      "projects": {
+        "description": "View a list current projects",
+        "pages": {
+          "ecommerceplatform": {
+            "description": "lorem"
+          },
+          "proj2": {
+            "description": "proj2 descript"
+          },
+          "proj3": {
+            "description": "proj3 descript"
+          },
+          "proj4": {
+            "description": "proj4 descript"
+          },
+          "proj5": {
+            "description": "proj5 descript"
+          }
+        }
+      }
     }
   },
-
   "commands": [
     {
       "command": "help",
@@ -45,8 +51,13 @@
     },
     {
       "command": "cd",
-      "description": "Navigate to a page",
+      "description": "Navigate to a directory",
       "usage": "cd <page>"
+    },
+    {
+      "command": "cat",
+      "description": "Navigate to a page",
+      "usage": "cat <page>"
     },
     {
       "command": "clear",
@@ -57,6 +68,16 @@
       "command": "whoami",
       "description": "Show information about the portfolio owner",
       "usage": "whoami"
+    },
+    {
+      "command": "pwd",
+      "description": "List current path",
+      "usage": "pwd"
+    },
+    {
+      "command": "cat",
+      "description": "View file contents",
+      "usage": "cat <filename>"
     }
   ]
 }
