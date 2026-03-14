@@ -56,7 +56,7 @@
     },
     {
       "command": "cat",
-      "description": "Navigate to a page",
+      "description": "Views a page without changing the path",
       "usage": "cat <page>"
     },
     {
@@ -73,11 +73,6 @@
       "command": "pwd",
       "description": "List current path",
       "usage": "pwd"
-    },
-    {
-      "command": "cat",
-      "description": "View file contents",
-      "usage": "cat <filename>"
     }
   ]
 }

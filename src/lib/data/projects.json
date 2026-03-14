@@ -1,30 +1,30 @@
 [
   {
-    "title": "E-Commerce Platforma",
-    "route": "ecommerceplatform",
-    "description": "A full-stack online shopping platform with payment integration and inventory management.Lorem ipsuLorem ipsum, dolor sit amet consectetur adipisicing elit. Unde beatae, iure aliquid odio id ratione, ullam deleniti nam maiores quas vitae aut adipisciipsam earum commodi officia necessitatm, dolor sit amet consectetur adipisicing elit. Unde beatae, iure aliquid odio id ratione, ullam deleniti nam maiores quas vitae aut adipisciipsam earum commodi officia necessitatibus sint. Iusto!",
-    "image": "/img/tmp.png",
-    "image_alt": "E-commerce Platform Img",
-    "tags": ["React", "Node.js", "MongoDB"],
-    "link": "ecommerce"
+    "title": "Emotion Classification",
+    "route": "emoteclass",
+    "description": "A Python-powered machine learning model that is trained on a dataset of facial images labeled with emotions, enabling it to classify the emotion expressed in a new image.",
+    "image": "/img/emotion_classification.png",
+    "image_alt": "Emotion Classification Github page",
+    "tags": ["Python", "TensorFlow"],
+    "link": "https://github.com/LoganWatson1400/Emotion_Classificaton"
   },
   {
-    "title": "Weather Dashboard",
-    "route": "weatherdashboard",
-    "description": "Real-time weather tracking application with interactive maps and forecasts.",
-    "image": "/img/tmp.png",
-    "image_alt": "Weather Dashboard Img",
-    "tags": ["Svelte", "API", "Charts"],
-    "link": "weather"
+    "title": "Discord Git Push-Viewer",
+    "route": "gitpushview",
+    "description": "A Node.js bot that monitors a GitHub repository for pull request activity and sends real-time Discord notifications. Posts an embed when a PR is opened, then replaces it with a merge or close notification when the PR is resolved. State is persisted with Upstash Redis so no PR gets double-notified across restarts.",
+    "image": "/img/git_push_view.png",
+    "image_alt": "git-push-view Discord notification preview",
+    "tags": ["Node.js", "JavaScript", "GitHub API"],
+    "link": "https://github.com/LoganWatson1400/git-push-view"
   },
   {
-    "title": "Task Manager",
-    "route": "taskmanager",
-    "description": "Collaborative task management tool with team features and deadline tracking.",
-    "image": "/img/tmp.png",
-    "image_alt": "Task Manager Img",
-    "tags": ["Vue", "Firebase", "PWA"],
-    "link": "tasks"
+    "title": "Schedule Optimizer",
+    "route": "kco",
+    "description": "Production schedule optimizer for Kimberly-Clark manufacturing lines, using a genetic algorithm to minimize downtime and meet demand across tissue machines and converting lines.",
+    "image": "/img/kco.png",
+    "image_alt": "KCO Schedule Optimizer",
+    "tags": ["Python", "Pandas", "Genetic Algorithm", "Plotly"],
+    "link": "https://github.com/LoganWatson1400/KCO"
   },
   {
     "title": "Portfolio Site",
@@ -32,8 +32,7 @@
     "description": "Modern portfolio website with smooth animations and responsive design.",
     "image": "",
     "image_alt": "Portfolio Img",
-    "tags": ["HTML", "CSS", "JavaScript"],
-    "link": "portfolio"
+    "tags": ["HTML", "CSS", "JavaScript"]
   },
   {
     "title": "E-Commerce Platform",
@@ -41,8 +40,7 @@
     "description": "A full-stack online shopping platform with payment integration and inventory management.",
     "image": "",
     "image_alt": "E-commerce Platform Img",
-    "tags": ["React", "Node.js", "MongoDB"],
-    "link": "ecommerce"
+    "tags": ["React", "Node.js", "MongoDB"]
   },
   {
     "title": "Weather Dashboard",
@@ -50,8 +48,7 @@
     "description": "Real-time weather tracking application with interactive maps and forecasts.",
     "image": "",
     "image_alt": "Weather Dashboard Img",
-    "tags": ["Svelte", "API", "Charts"],
-    "link": "weather"
+    "tags": ["Svelte", "API", "Charts"]
   },
   {
     "title": "Task Manager",
@@ -59,8 +56,7 @@
     "description": "Collaborative task management tool with team features and deadline tracking.",
     "image": "",
     "image_alt": "Task Manager Img",
-    "tags": ["Vue", "Firebase", "PWA"],
-    "link": "tasks"
+    "tags": ["Vue", "Firebase", "PWA"]
   },
   {
     "title": "Portfolio Site",
@@ -68,7 +64,6 @@
     "description": "Modern portfolio website with smooth animations and responsive design.",
     "image": "",
     "image_alt": "Portfolio Img",
-    "tags": ["HTML", "CSS", "JavaScript"],
-    "link": "portfolio"
+    "tags": ["HTML", "CSS", "JavaScript"]
   }
 ]

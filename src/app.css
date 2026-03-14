@@ -93,6 +93,7 @@ table {
   padding: 8px 16px;
   background-color: var(--color-btn-primary);
   color: var(--color-txt-primary);
+  border: none;
 }
 
 .btn:hover {
@@ -109,7 +110,8 @@ table {
 }
 
 .btn-light{
-  background-color: lightgray;
+  background-color: rgba(160, 155, 155, 0.404);
+  border: none;
 }
 
 .btn-light:hover {

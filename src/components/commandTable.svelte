@@ -22,45 +22,51 @@ export let run = async (cmd) => terminalValue.set(cmd);
                             <div
                                 style="display: flex; flex-direction: column; text-align: left; gap: 8px;"
                                 >
-                                {#if line.command == "cd"}
+                                {#if line.command == "cat" || line.command == "cd"}
                                 {line.command}
                                 <hr style="height: 1px; border: none; background-color: white;" />
                                 <div
                                     style="display: flex; flex-direction: column; justify-content: space-evenly; margin-left: 10%;"
                                     >
                                     {#each Object.entries(data["/"]["pages"]) as [key, value]}
-                                    <div>
-                                        <div style="text-align: left;">
-                                            <button
-                                                class="btn-command"
-                                                onclick={() => run(line.command + " " + key)}
-                                                style="width: 100%; height: 100%; text-align: start;"
-                                                >
-                                                <div
-                                                    style="
-                                                    display: flex;
-                                                    flex-direction: column;
-                                                    width: 100%;
-                                                    justify-content: space-between;
-                                                    "
+                                    {#if key == "home" || line.command === "cat" || (line.command === "cd" ? value.pages : value)}
+                                        <div>
+                                            <div style="text-align: left;">
+                                                <button
+                                                    class="btn-command"
+                                                    onclick={() => run(line.command + " " + key)}
+                                                    style="width: 100%; height: 100%; text-align: start;"
                                                     >
-                                                    <h3>{key}</h3>
                                                     <div
                                                         style="
-                                                        text-align: right;
-                                                        padding-left: 4px;
-                                                        color: var(--color-txt-secondary);
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        width: 100%;
+                                                        justify-content: space-between;
                                                         "
                                                         >
-                                                        {value.description}
+                                                        {#if value.pages || key == "home"}
+                                                            <h3>{key}   /</h3>
+                                                        {:else}
+                                                            <h3>{key}</h3>
+                                                        {/if}
+                                                        <div
+                                                            style="
+                                                            text-align: right;
+                                                            padding-left: 4px;
+                                                            color: var(--color-txt-secondary);
+                                                            "
+                                                            >
+                                                            {value.description}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </button>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <hr
-                                        style="height: 1px; border: none; background-color: gray;"
-                                        />
+                                        <hr
+                                            style="height: 1px; border: none; background-color: gray;"
+                                            />
+                                    {/if}
                                     {/each}
                                 </div>
                                 {:else}

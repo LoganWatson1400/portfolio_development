@@ -4,16 +4,20 @@ import { goto } from "$app/navigation";
 import { terminalHistory } from "$lib/stores.js";
 
 class Stack {
-  constructor() { this.items = ["/"]; }
+  constructor() { this.items = ["pages"]; }
 
   // Push operation
-  push(element) { this.items.push(element); }
+  push(element) { 
+    this.items.push(element); 
+    this.items.push("pages");
+  }
 
   // Pop operation
   pop() {
     if (this.isEmpty()) {
       return "Stack is empty";
     }
+    this.items.pop();
     return this.items.pop();
   }
 
@@ -22,21 +26,29 @@ class Stack {
     if (this.isEmpty()) {
       return "/";
     }
-    return this.items[this.items.length - 1];
+    return this.items[this.items.length - 2];
   }
 
   clear() {
-    this.items = ["/"]
+    this.items = ["pages"]
   }
 
   toArr() {
-    if (this.isEmpty()) return ["/"];
-    return [...this.items];
+    if (this.isEmpty()) return ["/","pages"];
+    return ["/", ...this.items];
   }
 
   toString() {
-    if (this.isEmpty()) return "";
-    return "/" + this.toArr().join("/");
+    if (this.isEmpty()) return "/";
+  
+    const filtered = this.toArr().filter(el => el !== "pages" && el !=="/");
+    return "/" + filtered.join("/");
+  }
+
+  clone() {
+    const newStack = new Stack();
+    newStack.items = [...this.items];
+    return newStack;
   }
 
   // isEmpty operation
@@ -46,12 +58,6 @@ class Stack {
   size() { return this.items.length; }
 }
 const pathStack = new Stack();
-
-const navigateToProject = (project) => {
-  goto(`/projects/${project.route}`);
-};
-
-
 
 export async function runCmd(input) {
   const command = input.trim();
@@ -140,49 +146,62 @@ function getCurrentDir(pathArr) {
 
 function handleLs() {
   const lines = ["Available pages:", ""];
-  const currentDir = getCurrentDir(pathStack.toArr());
-
-  if (!currentDir) {
-    return "Current directory not found";
-  }
-
+  const currentDir = {"..": {"description": "Parent Directory", "pages":""}, ...getCurrentDir(pathStack.toArr())};
   const children = Object.keys(currentDir);
 
-  children.forEach((child) => {
-    const item = currentDir[child];
-    const marker = item && typeof item === "object" ? "/" : "";
-    const description = typeof item === "string" ? item : item.description || "";
-    lines.push(`  ${child.padEnd(20)} ${marker.padEnd(2)} ${description}`);
-  });
+  lines.push(
+    ...children.map((child) => {
+      const item = currentDir[child];
+      const isDir = item && "pages" in item;
+      return `  ${child.padEnd(20)} ${isDir ? "/" : " "} ${item?.description ?? ""}`;
+    })
+  );
   return lines.join("\n");
 }
 
-async function handleCd(args) {
+async function handleCat(args) {return handleNav(args, false)}
+
+async function handleCd(args) {return handleNav(args, true)}
+
+async function handleNav(args, updatePath) {
   if (args.length === 0) {
     const cmd = commandList.commands.find((c) => c.command === "cd");
     return cmd?.usage;
   }
+  var returnStr;
+  var tmpStack;
+  if(!updatePath) {
+    returnStr = "Viewing"
+    tmpStack = pathStack.clone();
+  }else{ 
+    tmpStack = pathStack;
+    returnStr = "Navigating to"
+  }
 
   switch (args[0]) {
     case "~":
-      pathStack.clear();
-      await goto(pathStack.toString());
-      return `Navigating Home`;
+    case "/":
+    case "home":
+      tmpStack.clear();
+      await goto(tmpStack.toString());
+      return `${returnStr} Home`;
     case "..":
-      pathStack.pop();
-      await goto(pathStack.toString());
-      return `Navigating to ${pathStack.peek()}`;
+      tmpStack.pop();
+      await goto(tmpStack.toString());
+      return `${returnStr}  ${tmpStack.peek()}`;
     default:
       {
-        const currentDir = getCurrentDir(pathStack.toArr());
+        const currentDir = getCurrentDir(tmpStack.toArr());
 
         if (!currentDir || !(args[0] in currentDir)) {
           return `Page not found: ${args[0]}. Type 'ls' to see available pages.`;
         }
 
-        pathStack.push(args[0]);
-        await goto(pathStack.toString());
-        return `${pathStack.toString()} Navigating to ${args[0]}...`;
+        tmpStack.push(args[0]);
+        if (updatePath) console.log(tmpStack.toString());
+        
+        await goto(tmpStack.toString());
+        return `${tmpStack.toString()} ${returnStr} ${args[0]}...`;
       }
   }
 
