@@ -2,7 +2,7 @@
   {
     "title": "Emotion Classification",
     "route": "emoteclass",
-    "description": "A comparative CNN study that benchmarks three architectures against a 6-class facial emotion dataset. The project trains a baseline CNN (no pooling), a regularized CNN with MaxPooling and 0.5 Dropout, and a fine-tuned Xception transfer learning model. Results are logged per-step and exported to a structured table, with loss and accuracy curves plotted for direct model comparison. The fine-tuned Xception model achieved the best validation accuracy at ~33%, demonstrating diminishing returns of transfer learning on a small dataset without full unfreezing.",
+    "description": "A comparative CNN study that benchmarks three architectures against a 6-class facial emotion dataset. The project trains a baseline CNN (no pooling), a regularized CNN with MaxPooling and 0.5 Dropout, and a fine-tuned Xception transfer learning model Results are logged per-step and exported to a structured table, with loss and accuracy curves plotted for direct model comparison. The fine-tuned Xception model achieved the best validation accuracy at ~33%, demonstrating diminishing returns of transfer learning on a small dataset without full unfreezing.",
     "image": "/img/emotion_classification.png",
     "image_alt": "Emotion Classification Github page",
     "tags": ["Python", "TensorFlow", "Keras", "CNNs", "Transfer Learning"],

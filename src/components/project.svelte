@@ -47,7 +47,10 @@
 
   <hr class="divider white" />
 
-  <h5 class="project-description">{project.description}</h5>
+  <div class="project-description-wrap">
+    <h5 class="project-description">{project.description}</h5>
+    <div class="description-fade"></div>
+  </div>
 </div>
 
 <style>
@@ -89,12 +92,29 @@
   }
 
   /* ─── Description ────────────────────────────────────────── */
-  .project-description {
+  .project-description-wrap {
     flex: 1 1 100%;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .project-description {
+    height: 100%;
     font-weight: normal;
     padding: 4px;
     background-color: rgba(100, 100, 100, 0.2);
-    overflow-y: scroll;
+    overflow: hidden;
+  }
+
+  .description-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3rem;
+    background: linear-gradient(to bottom, transparent, var(--color-secondary, #2a2a2a));
+    pointer-events: none;
   }
 
   /* ─── Stretched link ─────────────────────────────────────── */

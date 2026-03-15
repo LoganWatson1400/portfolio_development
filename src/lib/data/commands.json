@@ -19,20 +19,26 @@
       "projects": {
         "description": "View a list current projects",
         "pages": {
-          "ecommerceplatform": {
-            "description": "lorem"
+          "emoteclass": {
+            "description": "Emotion Classification"
           },
-          "proj2": {
-            "description": "proj2 descript"
+          "gitpushview": {
+            "description": "Discord Git Push-Viewer"
           },
-          "proj3": {
-            "description": "proj3 descript"
+          "kco": {
+            "description": "Schedule Optimizer"
           },
-          "proj4": {
-            "description": "proj4 descript"
+          "portfoliosite": {
+            "description": "Portfolio Site"
           },
-          "proj5": {
-            "description": "proj5 descript"
+          "risamipsassembler": {
+            "description": "RISA MIPS Assembler"
+          },
+          "3dpong": {
+            "description": "3D Pong"
+          },
+          "bradyhackathon": {
+            "description": "Brady Workplace Safety AI"
           }
         }
       }

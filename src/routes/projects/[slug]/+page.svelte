@@ -37,7 +37,7 @@
 
     <!-- <hr class="divider white content-divider" /> -->
 
-    <p class="project-description">
+    <p class="card secondary project-description">
       {data.project.description}
     </p>
   </div>
