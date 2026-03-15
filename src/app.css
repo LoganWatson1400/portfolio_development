@@ -167,6 +167,15 @@ table {
   width: 100%;
 }
 
+.flex {
+  display: flex;
+  gap: 16px;
+}
+
+.flex.col {
+  flex-direction: column;
+}
+
 @media (max-width: 930px) {
   .command__description {
     display: none;

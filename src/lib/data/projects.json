@@ -2,10 +2,10 @@
   {
     "title": "Emotion Classification",
     "route": "emoteclass",
-    "description": "A Python-powered machine learning model that is trained on a dataset of facial images labeled with emotions, enabling it to classify the emotion expressed in a new image.",
+    "description": "A comparative CNN study that benchmarks three architectures against a 6-class facial emotion dataset. The project trains a baseline CNN (no pooling), a regularized CNN with MaxPooling and 0.5 Dropout, and a fine-tuned Xception transfer learning model. Results are logged per-step and exported to a structured table, with loss and accuracy curves plotted for direct model comparison. The fine-tuned Xception model achieved the best validation accuracy at ~33%, demonstrating diminishing returns of transfer learning on a small dataset without full unfreezing.",
     "image": "/img/emotion_classification.png",
     "image_alt": "Emotion Classification Github page",
-    "tags": ["Python", "TensorFlow"],
+    "tags": ["Python", "TensorFlow", "Keras", "CNNs", "Transfer Learning"],
     "link": "https://github.com/LoganWatson1400/Emotion_Classificaton"
   },
   {
@@ -23,7 +23,7 @@
     "description": "Production schedule optimizer for Kimberly-Clark manufacturing lines, using a genetic algorithm to minimize downtime and meet demand across tissue machines and converting lines.",
     "image": "/img/kco.png",
     "image_alt": "KCO Schedule Optimizer",
-    "tags": ["Python", "Pandas", "Genetic Algorithm", "Plotly"],
+    "tags": ["Team", "Python", "Pandas", "Genetic Algorithm", "Plotly"],
     "link": "https://github.com/LoganWatson1400/KCO"
   },
   {
@@ -35,35 +35,27 @@
     "tags": ["HTML", "CSS", "JavaScript"]
   },
   {
-    "title": "E-Commerce Platform",
-    "route": "ecommerceplatform2",
-    "description": "A full-stack online shopping platform with payment integration and inventory management.",
-    "image": "",
-    "image_alt": "E-commerce Platform Img",
-    "tags": ["React", "Node.js", "MongoDB"]
+    "title": "RISA MIPS Assembler",
+    "route": "risamipsassembler",
+    "description": "A two-milestone MIPS assembler written in Java that translates Reduced Instruction Set Architecture (RISA) assembly into 8-digit hexadecimal machine code. Milestone 1 handles single-line assembly parsing via a JAR CLI tool; Milestone 2 extends it into a full MIPS simulator capable of processing complete .asm programs with separate .text and .data segments.",
+    "image": "/img/mips_assemble.png",
+    "image_alt": "RISA MIPS Assembler Img",
+    "tags": ["Team", "Java", "MIPS", "Assembly", "Systems Programming"]
   },
   {
-    "title": "Weather Dashboard",
-    "route": "weatherdashboard2",
-    "description": "Real-time weather tracking application with interactive maps and forecasts.",
-    "image": "",
-    "image_alt": "Weather Dashboard Img",
-    "tags": ["Svelte", "API", "Charts"]
+    "title": "3D Pong",
+    "route": "3dpong",
+    "description": "A 3D Pong game built from scratch in C++ using OpenGL and GLUT. The player controls a rectangular paddle in 3D space to deflect a bouncing ball, which accelerates with every successful hit. Features include real-time shadow projection onto all six walls, a full free-form camera system with mouse-driven rotation/pan/zoom, a 60 FPS game loop, score tracking, and a Game Over screen. Developed as a team project for CS459.",
+    "image": "/img/3d_pong.png",
+    "image_alt": "3D Pong Game Img",
+    "tags": ["Team", "C++", "OpenGL", "GLUT", "Game Development", "3D Graphics"]
   },
   {
-    "title": "Task Manager",
-    "route": "taskmanager2",
-    "description": "Collaborative task management tool with team features and deadline tracking.",
-    "image": "",
-    "image_alt": "Task Manager Img",
-    "tags": ["Vue", "Firebase", "PWA"]
-  },
-  {
-    "title": "Portfolio Site",
-    "route": "portfoliosite2",
-    "description": "Modern portfolio website with smooth animations and responsive design.",
-    "image": "",
-    "image_alt": "Portfolio Img",
-    "tags": ["HTML", "CSS", "JavaScript"]
+    "title": "Brady Workplace Safety AI",
+    "route": "bradyhackathon",
+    "description": "A mobile app built for the CSI Spring 2025 Hackathon, hosted by UW-Milwaukee in partnership with Brady Corporation. The app uses a fine-tuned Xception CNN to detect OSHA and ANSI regulatory violations from photos in real time. Users can snap a picture or upload an image, and the model instantly classifies it for compliance issues and surfaces a violation report. The ML pipeline was built in Python with TensorFlow/Keras, while the frontend was built with React and TypeScript via Expo Go for cross-platform mobile deployment. A Node.js backend handles server-side logic, and an NLP-based chatbot powered by sentence embeddings assists users in looking up specific regulations.",
+    "image": "/img/brady_hack.png",
+    "image_alt": "Brady Workplace Safety AI Img",
+    "tags": ["Team", "React", "TypeScript", "Python", "TensorFlow", "Keras", "Node.js", "Expo", "Machine Learning", "Computer Vision"]
   }
 ]
