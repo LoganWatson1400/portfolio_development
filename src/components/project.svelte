@@ -1,5 +1,4 @@
 <script>
-  import { goto } from "$app/navigation";
   import { terminalValue } from "$lib/stores.js";
   import { runCmd } from "$lib/terminal/terminal";
 
@@ -19,104 +18,114 @@
     terminalValue.set("");
   };
 
-  // Function to navigate to project detail page
-  const navigateToProject = () => {
-    // Extract slug from route (removes 'projects/' prefix if present)
-    const slug = project.route.replace(/^projects\//, "");
-    goto(`/projects/${slug}`);
-  };
+  $: slug = project.route.replace(/^projects\//, "");
+  $: href = project.route !== "" ? `/projects/${slug}` : null;
 </script>
 
-<div class="card secondary"
-  style="
-    display: flex; 
+<!-- app.css: "flex col" covers display:flex + flex-direction:column -->
+<div class="card secondary project-card flex col" class:interactive={href !== null}>
+
+  <div class="flex" style="width: 100%; justify-content: space-between;">
+    <div class="flex project-title-row">
+      <h1 class="project-title">{project.title}</h1>
+
+      {#if href !== null}
+        <a class="stretched-link" {href} aria-label="View {project.title} project"></a>
+      {/if}
+    </div>
+  </div>
+
+  <hr class="divider white" />
+
+  <div class="project-img">
+    {#if project.image === ""}
+      <h3 style="color: var(--color-txt-secondary); padding: 20px; text-align: center;">No Image Available</h3>
+    {:else}
+      <img src={project.image} alt={project.image_alt} style="width: 100%;" />
+    {/if}
+  </div>
+
+  <hr class="divider white" />
+
+  <h5 class="project-description">{project.description}</h5>
+</div>
+
+<style>
+  /* ─── Card shell ─────────────────────────────────────────── */
+  .project-card {
     flex: 1;
-    flex-direction: column; 
     min-width: 250px;
     height: 512px;
     padding: 16px;
     justify-content: start;
     align-items: center;
-  ">
-  <div id="Title Container"
-    style="
-      display: flex; 
-      width: 100%;
-      justify-content: space-between;
-    ">
-    <div id="Title"
-      style="
-        display: flex;
-        height: fit-content;
-        flex: 1 0 auto;
-        max-width: 100%;
-        padding: 4px;
-        gap: 4px;
-      ">
-      <h1
-        style="
-          height: 20%; 
-          width: 80%; 
-          text-align: center; 
-          margin: 8px 0px; 
-          flex: 1 3 auto
-        ">
-        {project.title}
-      </h1>
-      {#if project.route != ""}
-        <button class="btn-light"
-          style="
-            border-radius: 64px;
-            height: fit-content; 
-            width: fit-content; 
-            padding: 16px; 
-            align-self: center;
-          "
-          onclick={navigateToProject}
-        >
-          <img
-            src="/img/menu.svg"
-            style="flex: 1 1 auto"
-            alt="{project.title} Details Button"
-          />
-        </button>
-      {/if}
-  </div>
-  </div>
-  <hr class="divider white" />
-  <div id="Project Img"
-    style="
-      flex: 1 0 auto;
-      width: 100%; 
-      max-height: 50%;
-      margin: 0px 2px;
-      overflow: hidden;
-    ">
-    {#if project.image == ""}
-      <h3
-        style="
-        color: var(--color-txt-secondary); 
-        padding: 20px;
-        text-align: center;
-      ">
-        No Image Available
-      </h3>
-    {:else}
-      <img
-        src={project.image}
-        alt={project.image_alt}
-        style="width: 100%; padding: auto;">
-    {/if}
-  </div>
-  <hr class="divider white" />
-  <h5
-    style="
-      flex: 1 1 100%;
-      font-weight: normal;
-      padding: 4px;
-      background-color: rgba(100, 100, 100, 0.2);
-      overflow-y: scroll;
-    ">
-    {project.description}
-  </h5>
-</div>
+    position: relative;
+  }
+
+  /* ─── Title area ─────────────────────────────────────────── */
+  .project-title-row {
+    height: fit-content;
+    flex: 1 0 auto;
+    max-width: 100%;
+    padding: 4px;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .project-title {
+    width: 80%;
+    text-align: center;
+    margin: 8px 0;
+    flex: 1 3 auto;
+  }
+
+  /* ─── Image area ─────────────────────────────────────────── */
+  .project-img {
+    flex: 1 0 auto;
+    width: 100%;
+    max-height: 50%;
+    margin: 0 2px;
+    overflow: hidden;
+  }
+
+  /* ─── Description ────────────────────────────────────────── */
+  .project-description {
+    flex: 1 1 100%;
+    font-weight: normal;
+    padding: 4px;
+    background-color: rgba(100, 100, 100, 0.2);
+    overflow-y: scroll;
+  }
+
+  /* ─── Stretched link ─────────────────────────────────────── */
+  .stretched-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+  }
+
+  /* ─── Interactive card states ────────────────────────────── */
+  .card.interactive {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+  }
+
+  .card.interactive:has(.stretched-link:hover) {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .card.interactive:has(.stretched-link:focus-visible) {
+    outline: 2px solid var(--color-txt-primary);
+    outline-offset: 2px;
+  }
+
+  /* Keep any future interactive children above the stretched overlay */
+  .project-card :global(button),
+  .project-card :global(a:not(.stretched-link)) {
+    position: relative;
+    z-index: 2;
+  }
+</style>
