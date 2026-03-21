@@ -102,6 +102,7 @@ table {
 }
 
 .btn-secondary {
+  color: var(--color-txt-primary);
   background-color: var(--color-btn-secondary);
 }
 

@@ -32,7 +32,8 @@
     "description": "Modern portfolio website with smooth animations and responsive design.",
     "image": "",
     "image_alt": "Portfolio Img",
-    "tags": ["HTML", "CSS", "JavaScript"]
+    "tags": ["HTML", "CSS", "JavaScript"],
+    "link": "https://github.com/LoganWatson1400/portfolio_development"
   },
   {
     "title": "RISA MIPS Assembler",
@@ -40,7 +41,8 @@
     "description": "A two-milestone MIPS assembler written in Java that translates Reduced Instruction Set Architecture (RISA) assembly into 8-digit hexadecimal machine code. Milestone 1 handles single-line assembly parsing via a JAR CLI tool; Milestone 2 extends it into a full MIPS simulator capable of processing complete .asm programs with separate .text and .data segments.",
     "image": "/img/mips_assemble.png",
     "image_alt": "RISA MIPS Assembler Img",
-    "tags": ["Team", "Java", "MIPS", "Assembly", "Systems Programming"]
+    "tags": ["Team", "Java", "MIPS", "Assembly", "Systems Programming"],
+    "link": "https://github.com/HawkerX/risa-mips-assembler"
   },
   {
     "title": "3D Pong",
@@ -48,7 +50,8 @@
     "description": "A 3D Pong game built from scratch in C++ using OpenGL and GLUT. The player controls a rectangular paddle in 3D space to deflect a bouncing ball, which accelerates with every successful hit. Features include real-time shadow projection onto all six walls, a full free-form camera system with mouse-driven rotation/pan/zoom, a 60 FPS game loop, score tracking, and a Game Over screen. Developed as a team project for CS459.",
     "image": "/img/3d_pong.png",
     "image_alt": "3D Pong Game Img",
-    "tags": ["Team", "C++", "OpenGL", "GLUT", "Game Development", "3D Graphics"]
+    "tags": ["Team", "C++", "OpenGL", "GLUT", "Game Development", "3D Graphics"],
+    "link": "https://github.com/sngaudet/CS459-Team-Project"
   },
   {
     "title": "Brady Workplace Safety AI",
@@ -56,6 +59,7 @@
     "description": "A mobile app built for the CSI Spring 2025 Hackathon, hosted by UW-Milwaukee in partnership with Brady Corporation. The app uses a fine-tuned Xception CNN to detect OSHA and ANSI regulatory violations from photos in real time. Users can snap a picture or upload an image, and the model instantly classifies it for compliance issues and surfaces a violation report. The ML pipeline was built in Python with TensorFlow/Keras, while the frontend was built with React and TypeScript via Expo Go for cross-platform mobile deployment. A Node.js backend handles server-side logic, and an NLP-based chatbot powered by sentence embeddings assists users in looking up specific regulations.",
     "image": "/img/brady_hack.png",
     "image_alt": "Brady Workplace Safety AI Img",
-    "tags": ["Team", "React", "TypeScript", "Python", "TensorFlow", "Keras", "Node.js", "Expo", "Machine Learning", "Computer Vision"]
+    "tags": ["Team", "React", "TypeScript", "Python", "TensorFlow", "Keras", "Node.js", "Expo", "Machine Learning", "Computer Vision"],
+    "link": "https://github.com/LoganWatson1400/Brady_Hackathon"
   }
 ]

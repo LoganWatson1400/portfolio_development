@@ -5,14 +5,21 @@
   import CommandTable from "../components/commandTable.svelte";
   import { terminalValue, terminalHistory } from "$lib/stores.js";
 
-  import { runCmd } from "$lib/terminal/terminal";
+  import { runCmd, syncPathFromUrl } from "$lib/terminal/terminal";
 
   
   let {children} = $props();
   let historyEl;
   let inputEl; 
 
-  afterNavigate(() => {
+  onMount(() => {
+    syncPathFromUrl(window.location.pathname);
+  });
+
+  afterNavigate(({ to }) => {
+    if (to?.url?.pathname) {
+      syncPathFromUrl(to.url.pathname);
+    }
     setTimeout(() => {
       inputEl?.focus();
     }, 50);
@@ -101,12 +108,10 @@
         position: relative;
       "
       >
-        <!--- scrollable content --->
         <div style="height: 100%; overflow-y: auto; padding: 32px 8px;">
           {@render children()}
         </div>
 
-        <!--- glass history overlay, anchored to bottom --->
         {#if $terminalHistory.length > 0}
           <div
             class="terminal"
@@ -187,7 +192,14 @@
       overflow-y: auto;
     "
     >
-      <CommandTable run={async (cmd) => { terminalValue.set(cmd); await runCmd(cmd); terminalValue.set(''); inputEl?.focus(); }} />
+      <CommandTable run={
+        async (cmd) => { 
+          terminalValue.set(cmd); 
+          await runCmd(cmd); 
+          terminalValue.set(''); 
+          inputEl?.focus(); 
+        }
+      } />
     </div>
   </div>
 </div>

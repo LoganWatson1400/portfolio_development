@@ -2,7 +2,12 @@
   "/": {
     "pages": {
       "home": {
-        "description": "Welcome to the site"
+        "description": "Welcome to the site",
+        "pages": {
+          "home": {
+            "description": "Welcome to the site"
+          }
+        }
       },
       "about": {
         "description": "Learn more about me"
@@ -64,6 +69,11 @@
       "command": "cat",
       "description": "Views a page without changing the path",
       "usage": "cat <page>"
+    },
+    {
+      "command": "q",
+      "description": "Exits the current viewing page",
+      "usage": "q"
     },
     {
       "command": "clear",

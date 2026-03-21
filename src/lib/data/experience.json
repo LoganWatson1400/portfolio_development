@@ -1,0 +1,77 @@
+{
+  "education": [
+    {
+      "school": "University of Wisconsin-Milwaukee",
+      "degree": "Bachelor of Science in Computer Science",
+      "date": "Expected May 2026",
+      "courses": ["Data Structures & Algorithms", "Database Systems", "Software Engineering", "Operating Systems", "Cybersecurity", "Algorithm Design & Analysis"]
+    }
+  ],
+  "work": [
+    {
+      "company": "Alliance",
+      "location": "Ripon, WI",
+      "title": "Line Assembler (Temporary)",
+      "date": "June 2025 - August 2025",
+      "bullets": [
+        "Assembled washing machines on a fast-paced production line, ensuring each unit met quality and safety standards.",
+        "Floated across multiple stations, quickly adapting to new assembly tasks and maintaining production flow.",
+        "Collaborated with team members to meet daily production targets in a high-volume environment."
+      ]
+    },
+    {
+      "company": "Mativ",
+      "location": "Appleton, WI",
+      "title": "Warehouse Associate (Temporary)",
+      "date": "July 2024 - September 2024",
+      "bullets": [
+        "Operated powered industrial equipment to improve throughput and reduce material handling time.",
+        "Coordinated with team members to consistently meet production and shipping deadlines."
+      ]
+    },
+    {
+      "company": "Arla Foods",
+      "location": "Kaukauna, WI",
+      "title": "Packaging Technician (Temporary)",
+      "date": "June 2023 - September 2023",
+      "bullets": [
+        "Operated and maintained machinery for packaging cheese products.",
+        "Conducted quality control checks to ensure accurate labeling and packaging.",
+        "Collaborated with cross-functional teams to troubleshoot and resolve production issues."
+      ]
+    },
+    {
+      "company": "Lowes",
+      "location": "Oshkosh, WI",
+      "title": "Sales Associate",
+      "date": "May 2022 - September 2022",
+      "bullets": [
+        "Advised customers on home improvement products, consistently driving upsells through product knowledge.",
+        "Maintained organized sales floor and communicated store policies, contributing to a positive customer experience."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Flashcard Roguelike (Capstone)",
+      "description": "Currently working with a team developing an educational Flashcard Roguelike game in Godot.",
+      "github": "https://github.com/LTEmmer/Group13Capstone" 
+    },
+    {
+      "name": "Kimberly-Clark Hackathon — Schedule Optimizer (Top 5)",
+      "description": "Developed a Python genetic algorithm to optimize warehouse scheduling efficiency for the Kimberly-Clark production line.",
+      "github": "https://github.com/LoganWatson1400"
+    },
+    {
+      "name": "Brady Corporation Hackathon — AI Workplace Safety (Top 5)",
+      "description": "Built a machine learning web app using a CNN model to detect OSHA violations in workplace images in real time.",
+      "github": "https://github.com/LoganWatson1400"
+    }
+  ],
+  "skills": {
+    "Languages": ["Python", "Java", "C", "C#", "SQL", "HTML", "CSS", "JS"],
+    "Frameworks & Tools": ["Svelte", "Godot", "Eclipse", "VS Code", "Visual Studio"],
+    "Concepts": ["OOP", "Machine Learning", "Neural Networks", "Game Development", "Git", "Agile"],
+    "Databases": ["SQL Queries", "Data Analysis"]
+  }
+}

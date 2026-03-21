@@ -1,6 +1,6 @@
 <script>
   import { terminalValue } from "$lib/stores.js";
-  import { runCmd } from "$lib/terminal/terminal";
+  import { runCmd, gotoWithoutSync } from "$lib/terminal/terminal";
 
   export let project = {
     title: "Default Project",
@@ -30,7 +30,12 @@
       <h1 class="project-title">{project.title}</h1>
 
       {#if href !== null}
-        <a class="stretched-link" {href} aria-label="View {project.title} project"></a>
+        <a
+          class="stretched-link"
+          {href}
+          aria-label="View {project.title} project"
+          on:click|preventDefault={() => gotoWithoutSync(href)}
+        ></a>
       {/if}
     </div>
   </div>
