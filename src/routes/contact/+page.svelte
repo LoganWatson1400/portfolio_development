@@ -1,54 +1,88 @@
-<script>
-  const links = [
-    { label: 'Email',    value: 'logan.ad.watson@outlook.com', href: 'mailto:logan.ad.watson@outlook.com' },
-    { label: 'Phone',    value: '(920) 379-5628',              href: 'tel:+19203795628' },
-    { label: 'GitHub',   value: 'LoganWatson1400',             href: 'https://github.com/LoganWatson1400' },
-    { label: 'Location', value: 'Winneconne, WI',              href: null },
-  ];
-</script>
+<div class="contact-root flex col">
+  <p class="terminal" style="color: var(--color-txt-secondary)">~ $ whoami</p>
 
-<div class="page flex col">
-  <div>
-    <h1>Contact</h1>
-    <p style="color: var(--color-txt-secondary); margin-top: 4px;">Feel free to reach out.</p>
+  <h1 class="identity-name">Logan<br />Watson</h1>
+
+  <hr class="divider white" />
+
+  <div class="flex col" style="gap: 0.85rem">
+    <p class="terminal" style="color: var(--color-txt-secondary)">
+      Full Stack Developer
+    </p>
+    <a
+      href="mailto:logan.ad.watson+portfolio@outlook.com"
+      class="terminal link-row">✉ logan.ad.watson@outlook.com</a
+    >
+    <a
+      href="https://github.com/LoganWatson1400"
+      target="_blank"
+      rel="noopener"
+      class="terminal link-row">⌥ github/LoganWatson</a
+    >
+    <a
+      href="https://linkedin.com/in/logan-ad-watson"
+      target="_blank"
+      rel="noopener"
+      class="terminal link-row">◈ linkedin/logan-ad-watson</a
+    >
   </div>
 
-  <div class="flex col" style="gap: 10px;">
-    {#each links as { label, value, href }}
-      <div class="card secondary row">
-        <span class="label">{label}</span>
-        {#if href}
-          <a {href} target={href.startsWith('http') ? '_blank' : null}
-            rel="noopener noreferrer"
-            style="color: var(--color-txt-highlight);">{value} ↗</a>
-        {:else}
-          <span style="color: var(--color-txt-secondary);">{value}</span>
-        {/if}
-      </div>
-    {/each}
-  </div>
+  <hr class="divider white" />
+
+  <p class="terminal availability">
+    <span class="status-dot"></span>
+    Available for opportunities
+  </p>
 </div>
 
 <style>
-  .page {
-    max-width: 480px;
-    margin: 2rem auto;
-    gap: 1.5rem;
+  .contact-root {
+    height: fit-content;
+    width: fit-content;
+    align-items: center;
+    justify-self: center;
+    justify-content: center;
+    padding: clamp(1.5rem, 4vw, 4rem);
   }
 
-  .row {
+  .identity-name {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .link-row {
+    color: var(--color-txt-secondary);
+    transition: color 0.15s;
+  }
+  .link-row:hover {
+    color: var(--color-txt-primary);
+  }
+
+  .availability {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 12px 16px;
-    width: 100%;
+    gap: 0.6rem;
+    color: var(--color-txt-secondary);
   }
 
-  .label {
-    min-width: 80px;
-    font-size: 0.85rem;
-    color: var(--color-txt-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-txt-success);
+    box-shadow: 0 0 6px var(--color-txt-success);
+    flex-shrink: 0;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
   }
 </style>

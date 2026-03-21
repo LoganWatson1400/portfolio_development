@@ -1,19 +1,23 @@
 <script>
-  import data from '../../lib/data/experience.json';
+  import data from "../../lib/data/experience.json";
 </script>
 
 <div class="page flex col">
-
   <section>
     <h2>Education</h2>
     {#each data.education as edu}
       <div class="card secondary entry">
-        <div class="flex" style="justify-content: space-between; align-items: center;">
+        <div
+          class="flex"
+          style="justify-content: space-between; align-items: center;"
+        >
           <strong>{edu.school}</strong>
-          <span style="color: var(--color-txt-secondary); font-size: 0.85rem;">{edu.date}</span>
+          <span style="color: var(--color-txt-secondary); font-size: 0.85rem;"
+            >{edu.date}</span
+          >
         </div>
         <p style="margin-top: 4px;">{edu.degree}</p>
-        <p class="courses">{edu.courses.join(' · ')}</p>
+        <p class="courses">{edu.courses.join(" · ")}</p>
       </div>
     {/each}
   </section>
@@ -22,11 +26,25 @@
     <h2>Work Experience</h2>
     {#each data.work as job}
       <div class="card secondary entry">
-        <div class="flex" style="justify-content: space-between; align-items: center;">
-          <strong>{job.company} <span style="color: var(--color-txt-secondary);">— {job.location}</span></strong>
-          <span style="color: var(--color-txt-secondary); font-size: 0.85rem;">{job.date}</span>
+        <div
+          class="flex"
+          style="justify-content: space-between; align-items: center;"
+        >
+          <strong
+            >{job.company}
+            <span style="color: var(--color-txt-secondary);"
+              >: {job.location}</span
+            ></strong
+          >
+          <span style="color: var(--color-txt-secondary); font-size: 0.85rem;"
+            >{job.date}</span
+          >
         </div>
-        <p style="color: var(--color-txt-highlight); font-size: 0.9rem; margin: 4px 0 8px;">{job.title}</p>
+        <p
+          style="color: var(--color-txt-highlight); font-size: 0.9rem; margin: 4px 0 8px;"
+        >
+          {job.title}
+        </p>
         <ul>
           {#each job.bullets as b}
             <li>{b}</li>
@@ -40,14 +58,26 @@
     <h2>Projects</h2>
     {#each data.projects as proj}
       <div class="card secondary entry">
-        <div class="flex" style="justify-content: space-between; align-items: center;">
+        <div
+          class="flex"
+          style="justify-content: space-between; align-items: center;"
+        >
           <strong>{proj.name}</strong>
           {#if proj.github}
-            <a href={proj.github} target="_blank" rel="noopener noreferrer"
-              style="font-size: 0.85rem; color: var(--color-txt-highlight);">GitHub ↗</a>
+            <a
+              href={proj.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              style="font-size: 0.85rem; color: var(--color-txt-highlight);"
+              >GitHub ↗</a
+            >
           {/if}
         </div>
-        <p style="margin-top: 6px; color: var(--color-txt-secondary); font-size: 0.9rem;">{proj.description}</p>
+        <p
+          style="margin-top: 6px; color: var(--color-txt-secondary); font-size: 0.9rem;"
+        >
+          {proj.description}
+        </p>
       </div>
     {/each}
   </section>
@@ -58,12 +88,13 @@
       {#each Object.entries(data.skills) as [category, items]}
         <div class="skill-row">
           <span class="skill-label">{category}</span>
-          <span style="color: var(--color-txt-secondary);">{items.join(', ')}</span>
+          <span style="color: var(--color-txt-secondary);"
+            >{items.join(", ")}</span
+          >
         </div>
       {/each}
     </div>
   </section>
-
 </div>
 
 <style>
@@ -112,10 +143,10 @@
 
   .skill-row {
     display: flex;
-    gap: 12px;
-    padding: 4px 0;
+    gap: 16px;
+    padding: 8px 0;
     font-size: 0.9rem;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .skill-row:last-child {

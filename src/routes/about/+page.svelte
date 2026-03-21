@@ -1,6 +1,4 @@
-<!--- bout pg --->
 
-<!--- Title --->
 <div style="display: flex; flex-direction: column; gap: 16px;">
   <div
     class="card"
