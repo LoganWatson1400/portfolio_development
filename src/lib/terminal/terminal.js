@@ -50,6 +50,19 @@ class Stack {
 const pathStack = new Stack();
 let suppressSync = false;
 
+const PATH_KEY = "terminal_path";
+
+function savePathStack() {
+  sessionStorage.setItem(PATH_KEY, JSON.stringify(pathStack.items));
+}
+
+function restorePathStack() {
+  try {
+    const saved = sessionStorage.getItem(PATH_KEY);
+    if (saved) pathStack.items = JSON.parse(saved);
+  } catch {}
+}
+
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 function isDir(item) {
@@ -78,13 +91,9 @@ export async function gotoWithoutSync(path) {
   suppressSync = false;
 }
 
-export function syncPathFromUrl(pathname) {
+export function syncPathFromUrl(_pathname) {
   if (suppressSync) return;
-  pathStack.clear();
-  const segments = pathname.split("/").filter(Boolean);
-  for (const segment of segments) {
-    pathStack.push(segment);
-  }
+  restorePathStack();
 }
 
 export async function runCmd(input) {
@@ -122,8 +131,8 @@ async function execute(command) {
     case "help":   return handleHelp(args);
     case "ls":     return handleLs();
     case "cat":    return handleCat(args);
-    case "q": {goto(pathStack.toString()); return "Quitting..."};
     case "cd":     return handleCd(args);
+    case "q":      {goto(pathStack.toString()); return "Quitting..."};
     case "clear":  return "__CLEAR__";
     case "whoami": return handleWhoami();
     case "pwd":    return handlePwd();
@@ -211,11 +220,13 @@ async function handleCd(args) {
     case "/":
     case "home":
       pathStack.clear();
+      savePathStack();
       await goto(pathStack.toString());
       return `Navigating to Home`;
 
     case "..":
       pathStack.pop();
+      savePathStack();
       await goto(pathStack.toString());
       return `Navigating to ${pathStack.peek()}`;
 
@@ -232,6 +243,7 @@ async function handleCd(args) {
       }
 
       pathStack.push(args[0]);
+      savePathStack();
       await goto(pathStack.toString());
       return `Navigating to ${args[0]}...`;
     }
