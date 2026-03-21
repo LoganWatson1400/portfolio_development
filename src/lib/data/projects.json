@@ -30,7 +30,7 @@
     "title": "Portfolio Site",
     "route": "portfoliosite",
     "description": "Modern portfolio website with smooth animations and responsive design.",
-    "image": "",
+    "image": "/img/portfolio.png",
     "image_alt": "Portfolio Img",
     "tags": ["HTML", "CSS", "JavaScript"],
     "link": "https://github.com/LoganWatson1400/portfolio_development"

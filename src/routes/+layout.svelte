@@ -1,4 +1,5 @@
 <script>
+  export const prerender = true;
   import favicon from "$lib/assets/favicon.svg";
   import { tick, onMount } from "svelte";
   import { afterNavigate } from "$app/navigation";

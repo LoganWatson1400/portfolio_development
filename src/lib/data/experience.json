@@ -58,12 +58,12 @@
       "github": "https://github.com/LTEmmer/Group13Capstone" 
     },
     {
-      "name": "Kimberly-Clark Hackathon — Schedule Optimizer (Top 5)",
+      "name": "Kimberly-Clark Hackathon : Schedule Optimizer (Top 5)",
       "description": "Developed a Python genetic algorithm to optimize warehouse scheduling efficiency for the Kimberly-Clark production line.",
       "github": "https://github.com/LoganWatson1400"
     },
     {
-      "name": "Brady Corporation Hackathon — AI Workplace Safety (Top 5)",
+      "name": "Brady Corporation Hackathon : AI Workplace Safety (Top 5)",
       "description": "Built a machine learning web app using a CNN model to detect OSHA violations in workplace images in real time.",
       "github": "https://github.com/LoganWatson1400"
     }
