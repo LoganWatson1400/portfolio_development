@@ -1,5 +1,6 @@
 <script>
   import favicon from "$lib/assets/favicon.svg";
+  import '../app.css';
   import { tick, onMount } from "svelte";
   import { afterNavigate } from "$app/navigation";
   import CommandTable from "../components/commandTable.svelte";
