@@ -1,5 +1,9 @@
 <div class="page-root flex col">
-  <div class="card secondary hint-card">
+  <div class="card secondary"
+    style="
+      width: 100%;
+      padding: 24px 32px;
+    ">
     <p style="font-size: clamp(1rem, 2vw, 1.4rem); line-height: 1.7;">
       <b>Welcome to my portfolio.</b> <br />
       Type
@@ -14,13 +18,20 @@
     </p>
   </div>
 
-  <div class="card secondary flex main-card">
+  <div class="card secondary flex"
+      style="
+        width: 100%;
+        padding: 32px;
+        align-items: center;
+        gap: 48px;
+        flex-wrap: wrap;
+      ">
     <div
       class="flex col"
       style="
-        flex: 1; 
+        flex: 2; 
         gap: 12px; 
-        min-width: 0; 
+        min-width: 200px;
       "
     >
       <h1 class="identity-name">Logan<br />Watson</h1>
@@ -34,7 +45,7 @@
       >
        FULL STACK DEVELOPER 
       </p>
-      <hr class="divider white" style="width: 48px;" />
+      <hr class="divider white"/>
       <p
         style="
           color: var(--color-txt-secondary); 
@@ -45,47 +56,36 @@
         CS student at UW-Milwaukee. I build across the stack: web apps, ML
         tools, and games.
       </p>
-      <div class="flex" style="gap: 12px; flex-wrap: wrap;">
+      <div class="flex" style="gap: 12px; flex-wrap: wrap; justify-content: center;">
         <a href="/about"><button class="btn">About</button></a>
         <a href="/projects"><button class="btn">Projects</button></a>
         <a href="/contact"><button class="btn">Contact</button></a>
       </div>
     </div>
 
-    <div class="card image-card">
       <img
         src="/img/dragon.jpg"
         alt=""
         style="
-          width: 100%; 
-          height: 100%; 
+          flex: 1 1 300px;
+          min-width: 200px;
           object-fit: cover; 
           border-radius: 8px;
         "
       />
-    </div>
   </div>
 </div>
 
 <style>
   .page-root {
+    display: flex;
+    flex-wrap: wrap;
     padding: 2% 5%;
-    height: 100%;
-    overflow: hidden;
+    height: fit-content;
+    width: 90%;
+    justify-self: center;
+    overflow: scroll;
     gap: 12px;
-  }
-
-  .hint-card {
-    width: 100%;
-    padding: 24px 32px;
-  }
-
-  .main-card {
-    flex: 1;
-    min-height: 0;
-    padding: 32px;
-    align-items: center;
-    gap: 48px;
   }
 
   .identity-name {
@@ -94,11 +94,4 @@
     letter-spacing: -0.02em;
   }
 
-  .image-card {
-    flex: 1;
-    min-height: 0;
-    height: 100%;
-    overflow: hidden;
-    max-width: 50%;
-  }
 </style>
