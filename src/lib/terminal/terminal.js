@@ -1,266 +1,128 @@
-import commandList from "$lib/data/commands.json";
-import projectsData from "$lib/data/projects.json";
 import { goto } from "$app/navigation";
 import { terminalHistory } from "$lib/stores.js";
-
-class Stack {
-  constructor() { this.items = ["pages"]; }
-
-  push(element) {
-    this.items.push(element);
-    this.items.push("pages");
-  }
-
-  pop() {
-    if (this.isEmpty()) return "Stack is empty";
-    this.items.pop();
-    return this.items.pop();
-  }
-
-  peek() {
-    if (this.isEmpty()) return "/";
-    return this.items[this.items.length - 2];
-  }
-
-  clear() {
-    this.items = ["pages"];
-  }
-
-  toArr() {
-    if (this.isEmpty()) return ["/", "pages"];
-    return ["/", ...this.items];
-  }
-
-  toString() {
-    if (this.isEmpty()) return "/";
-    const filtered = this.toArr().filter(el => el !== "pages" && el !== "/");
-    return "/" + filtered.join("/");
-  }
-
-  clone() {
-    const newStack = new Stack();
-    newStack.items = [...this.items];
-    return newStack;
-  }
-
-  isEmpty() { return this.items.length === 1; }
-  size() { return this.items.length; }
-}
-
-const pathStack = new Stack();
-let suppressSync = false;
+import tree from "$lib/data/tree.json";
 
 const PATH_KEY = "terminal_path";
 
-function savePathStack() {
-  sessionStorage.setItem(PATH_KEY, JSON.stringify(pathStack.items));
+// ── nav helpers ───────────────────────────────────────────────────────────────
+
+/**
+ * Walk the flat tree for a given pathStack.
+ * Root is tree["/"]. Each directory segment is stored with a trailing slash.
+ *
+ * [] → tree["/"]              (root)
+ * ["projects"] → tree["/"]["projects/"]
+ *
+ * @param {string[]} pathArr
+ * @returns {object|null}
+ */
+export function getCurrentDir(pathArr) {
+  if (pathArr.length === 0) return tree["/"];
+
+  // Only one level of nesting is supported in the flat structure.
+  // The last segment is the directory key (with trailing slash).
+  const dirKey = pathArr[pathArr.length - 1] + "/";
+  return tree["/"][dirKey] ?? null;
 }
 
-function restorePathStack() {
-  try {
-    const saved = sessionStorage.getItem(PATH_KEY);
-    if (saved) pathStack.items = JSON.parse(saved);
-  } catch {}
+/**
+ * A key ending with "/" is a directory entry.
+ * @param {string} key
+ * @returns {boolean}
+ */
+export function isDir(key) {
+  return key.endsWith("/");
 }
 
-// ── helpers ──────────────────────────────────────────────────────────────────
-
-function isDir(item) {
-  return (
-    item &&
-    typeof item.pages === "object" &&
-    item.pages !== null &&
-    Object.keys(item.pages).length > 0
-  );
+/**
+ * Strip the trailing slash from a directory key to get the display name.
+ * @param {string} key
+ * @returns {string}
+ */
+export function dirName(key) {
+  return key.endsWith("/") ? key.slice(0, -1) : key;
 }
 
-function getCurrentDir(pathArr) {
-  let current = commandList;
-  for (const segment of pathArr) {
-    if (!current || !(segment in current)) return null;
-    current = current[segment];
-  }
-  return current;
-}
+// ── Terminal ──────────────────────────────────────────────────────────────────
 
-// ── public API ────────────────────────────────────────────────────────────────
-
-export async function gotoWithoutSync(path) {
-  suppressSync = true;
-  await goto(path);
-  suppressSync = false;
-}
-
-export function syncPathFromUrl(_pathname) {
-  if (suppressSync) return;
-  restorePathStack();
-}
-
-export async function runCmd(input) {
-  const command = input.trim();
-  if (!command) return;
-
-  terminalHistory.update((h) => [...h, `> ${command}`]);
-
-  const output = await execute(command);
-  if (output === "__CLEAR__") {
-    terminalHistory.set([]);
-  } else {
-    terminalHistory.update((h) => [...h, output]);
-  }
-}
-
-// ── execute ───────────────────────────────────────────────────────────────────
-
-async function execute(command) {
-  const parts = command.split(/\s+/).filter(Boolean);
-  const cmd = parts[0].toLowerCase();
-  const args = parts.slice(1);
-
-  const foundCmd = commandList.commands.find((c) => c.command === cmd);
-
-  if (!foundCmd) {
-    return `Command not found: ${cmd}. Type 'help' for available commands.`;
+export class Terminal {
+  constructor() {
+    /** @type {string[]} e.g. [] = root, ["projects"] = inside projects */
+    this.pathStack = [];
+    this._restorePathStack();
   }
 
-  if (args.includes("--help")) {
-    return foundCmd.usage || "";
+  getPath() {
+    return "/" + this.pathStack.join("/");
   }
 
-  switch (foundCmd.command) {
-    case "help":   return handleHelp(args);
-    case "ls":     return handleLs();
-    case "cat":    return handleCat(args);
-    case "cd":     return handleCd(args);
-    case "q":      {goto(pathStack.toString()); return "Quitting..."};
-    case "clear":  return "__CLEAR__";
-    case "whoami": return handleWhoami();
-    case "pwd":    return handlePwd();
-    default:       return `${cmd}: command not implemented`;
-  }
-}
-
-// ── command handlers ──────────────────────────────────────────────────────────
-
-function handleHelp(args) {
-  if (args.length === 0) {
-    const lines = [
-      "Available commands: (or click any on the right)",
-      "",
-      ...commandList.commands.map(
-        (c) => `  ${c.command.padEnd(8)} - ${c.description}`
-      ),
-    ];
-    return lines.join("\n");
+  pushPath(segment) {
+    this.pathStack.push(segment);
+    this._savePathStack();
   }
 
-  const cmdName = args[0].toLowerCase();
-  const cmd = commandList.commands.find((c) => c.command === cmdName);
-  if (!cmd) return `help: no help topics match '${cmdName}'`;
-  return `${cmd.command} - ${cmd.description}`;
-}
-
-function handleLs() {
-  const lines = ["Available pages:", ""];
-  const currentDir = {
-    "..": { description: "Parent Directory", pages: "" },
-    ...getCurrentDir(pathStack.toArr()),
-  };
-
-  lines.push(
-    ...Object.entries(currentDir).map(([child, item]) => {
-      const dir = isDir(item);
-      return `  ${child.padEnd(20)} ${dir ? "/" : " "} ${item?.description ?? ""}`;
-    })
-  );
-  return lines.join("\n");
-}
-
-async function handleCat(args) {
-  if (args.length === 0) {
-    const cmd = commandList.commands.find((c) => c.command === "cat");
-    return cmd?.usage ?? "";
+  popPath() {
+    const popped = this.pathStack.pop();
+    this._savePathStack();
+    return popped;
   }
 
-  // special roots — not applicable to cat
-  if (args[0] === "~" || args[0] === "/" || args[0] === "home") {
-    return `cat: home: is a directory`;
+  clearPath() {
+    this.pathStack = [];
+    this._savePathStack();
   }
 
-  if (args[0] === "..") {
-    return `cat: ..: is a directory`;
+  async navigate(url) {
+    await goto(url, { replaceState: false });
   }
 
-  const currentDir = getCurrentDir(pathStack.toArr());
-  if (!currentDir || !(args[0] in currentDir)) {
-    return `cat: ${args[0]}: no such file. Type 'ls' to see available pages.`;
-  }
+  async run(input) {
+    const trimmed = input.trim();
+    if (!trimmed) return;
 
-  const target = currentDir[args[0]];
-  if (isDir(target)) {
-    return `cat: ${args[0]}: is a directory (use 'cd' to navigate into it)`;
-  }
+    terminalHistory.update((h) => [...h, `> ${trimmed}`]);
 
-  const tmpStack = pathStack.clone();
-  tmpStack.push(args[0]);
-  suppressSync = true;
-  await goto(tmpStack.toString());
-  suppressSync = false;
-  return `Viewing ${args[0]}...`;
-}
+    const output = await this._dispatch(trimmed);
 
-async function handleCd(args) {
-  if (args.length === 0) {
-    const cmd = commandList.commands.find((c) => c.command === "cd");
-    return cmd?.usage ?? "";
-  }
-
-  switch (args[0]) {
-    case "~":
-    case "/":
-    case "home":
-      pathStack.clear();
-      savePathStack();
-      await goto(pathStack.toString());
-      return `Navigating to Home`;
-
-    case "..":
-      pathStack.pop();
-      savePathStack();
-      await goto(pathStack.toString());
-      return `Navigating to ${pathStack.peek()}`;
-
-    default: {
-      const currentDir = getCurrentDir(pathStack.toArr());
-
-      if (!currentDir || !(args[0] in currentDir)) {
-        return `cd: ${args[0]}: no such directory. Type 'ls' to see available pages.`;
-      }
-
-      const target = currentDir[args[0]];
-      if (!isDir(target)) {
-        return `cd: ${args[0]}: is a file (use 'cat' to view it)`;
-      }
-
-      pathStack.push(args[0]);
-      savePathStack();
-      await goto(pathStack.toString());
-      return `Navigating to ${args[0]}...`;
+    if (output === "__CLEAR__") {
+      terminalHistory.set([]);
+    } else {
+      terminalHistory.update((h) => [...h, output]);
     }
   }
-}
 
-function handleWhoami() {
-  const lines = [
-    `Name: Logan Watson`,
-    `Role: Full Stack Developer`,
-    `Location: Your City`,
-    "",
-    "Type 'ls' to see available pages or 'help' for commands.",
-  ];
-  return lines.join("\n");
-}
+  async _dispatch(input) {
+    const [op, ...args] = input.split(/\s+/);
+    const name = op.toLowerCase();
+    const helpFlag = args.includes("--help");
 
-function handlePwd() {
-  return pathStack.toString();
+    let CommandClass;
+    try {
+      const mod = await import(`$lib/terminal/mybin/${name}.js`);
+      CommandClass = mod.default;
+    } catch {
+      return `Command not found: ${name}. Type 'help' for available commands.`;
+    }
+
+    const cmd = new CommandClass();
+
+    if (helpFlag) return cmd.usage || `${cmd.name}: no help available`;
+
+    return await cmd.execute({
+      terminal: this,
+      args,
+      path: [...this.pathStack],
+    });
+  }
+
+  _savePathStack() {
+    try { sessionStorage.setItem(PATH_KEY, JSON.stringify(this.pathStack)); } catch {}
+  }
+
+  _restorePathStack() {
+    try {
+      const saved = sessionStorage.getItem(PATH_KEY);
+      if (saved) this.pathStack = JSON.parse(saved);
+    } catch {}
+  }
 }

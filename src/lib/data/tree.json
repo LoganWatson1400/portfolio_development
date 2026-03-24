@@ -1,0 +1,45 @@
+{
+  "/": {
+    "welcome": {
+      "description": "Welcome to the site"
+    },
+    "about": {
+      "description": "Learn more about me"
+    },
+    "skills": {
+      "description": "Technologies I work with"
+    },
+    "experience": {
+      "description": "My work and education history"
+    },
+    "contact": {
+      "description": "Get in touch with me"
+    },
+    "projects": {
+      "description": "View a list current projects"
+    }, 
+    "projects/": {
+      "emoteclass": {
+        "description": "Emotion Classification"
+      },
+      "gitpushview": {
+        "description": "Discord Git Push-Viewer"
+      },
+      "kco": {
+        "description": "Schedule Optimizer"
+      },
+      "portfoliosite": {
+        "description": "Portfolio Site"
+      },
+      "risamipsassembler": {
+        "description": "RISA MIPS Assembler"
+      },
+      "3dpong": {
+        "description": "3D Pong"
+      },
+      "bradyhackathon": {
+        "description": "Brady Workplace Safety AI"
+      }
+    }
+  }
+}

@@ -5,31 +5,38 @@
   import { afterNavigate } from "$app/navigation";
   import CommandTable from "../components/commandTable.svelte";
   import { terminalValue, terminalHistory } from "$lib/stores.js";
+  import { Terminal } from "$lib/terminal/terminal.js";
 
-  import { runCmd, syncPathFromUrl } from "$lib/terminal/terminal";
-
-  
-  let {children} = $props();
+  let { children } = $props();
   let historyEl;
-  let inputEl; 
+  let inputEl;
+
+  // Instantiated in onMount so sessionStorage is available (no SSR issues).
+  let terminal;
+  let currentPath = $state("/");
 
   onMount(() => {
-    syncPathFromUrl(window.location.pathname);
+    terminal = new Terminal();
+    currentPath = terminal.getPath();
+    inputEl?.focus();
   });
 
-  afterNavigate(({ to }) => {
-    if (to?.url?.pathname) {
-      syncPathFromUrl(to.url.pathname);
-    }
-    setTimeout(() => {
-      inputEl?.focus();
-    }, 50);
+  // Keep the header path label in sync after every navigation.
+  afterNavigate(() => {
+    setTimeout(() => inputEl?.focus(), 50);
   });
 
+  // Scroll the history pane to the bottom whenever it updates.
   $effect(() => {
     $terminalHistory;
     scrollToBottom();
   });
+
+  async function runCmd(input) {
+    if (!terminal) return;
+    await terminal.run(input);
+    currentPath = terminal.getPath();
+  }
 
   function handleKey(e) {
     if (e.key === "Enter") {
@@ -73,7 +80,7 @@
   >
     <div style="display: flex; justify-content: space-between;">
       <h1 style="font-size: clamp(0.5rem, 2vw + 8px, 3rem)">Logan Watson:</h1>
-      <h1>Root</h1>
+      <h1>{currentPath}</h1>
     </div>
     <hr style="height: 1px; background-color: white;" />
   </div>
@@ -136,15 +143,14 @@
                 <div style="display: flex; flex-direction: column; gap: 0 16px; padding: 2px 0;">
                   {#each line.rows as row}
                     <div style="display: flex; flex-wrap: nowrap;">
-                    <div style="margin-left: 5%;"></div>
+                      <div style="margin-left: 5%;"></div>
                       {#each row as col, i}
-
                         <span
                           class="terminal"
                           style="
-                          {(i % 3) === 0? 'flex: 2 3 5%' : ''}
-                          {(i % 3) === 1? 'flex: 1 6 5%' : ''}
-                          {(i % 3) === 2? 'flex: 9 1 5%' : ''}
+                          {(i % 3) === 0 ? 'flex: 2 3 5%' : ''}
+                          {(i % 3) === 1 ? 'flex: 1 6 5%' : ''}
+                          {(i % 3) === 2 ? 'flex: 9 1 5%' : ''}
                           ">{col}</span
                         >
                       {/each}
@@ -159,7 +165,7 @@
         {/if}
       </div>
 
-      <!--- terminal --->
+      <!--- terminal input --->
       <div
         class="terminal input"
         style="display: flex; background-color: #333;"
@@ -170,9 +176,9 @@
           autofocus
           style="
             padding: 2px;
-            flex: 1; 
-            background: none; 
-            border: none; 
+            flex: 1;
+            background: none;
+            border: none;
             color: var(--color-txt-primary);
             outline: none;
             font-size: clamp(0.5rem, 1vw + 8px, 3rem)
@@ -193,14 +199,19 @@
       overflow-y: auto;
     "
     >
+      <script>
+        /*
+
       <CommandTable run={
-        async (cmd) => { 
-          terminalValue.set(cmd); 
-          await runCmd(cmd); 
-          terminalValue.set(''); 
-          inputEl?.focus(); 
+        async (cmd) => {
+          terminalValue.set(cmd);
+          await runCmd(cmd);
+          terminalValue.set("");
+          inputEl?.focus();
         }
       } />
+        */
+      </script>
     </div>
   </div>
 </div>
