@@ -84,7 +84,7 @@
     height: fit-content;
     width: 90%;
     justify-self: center;
-    overflow: scroll;
+    overflow: auto;
     gap: 12px;
   }
 

@@ -160,15 +160,19 @@ table {
 }
 
 .divider.white {
+  min-height: 1px;
   height: 1px;
   background-color: white;
   width: 100%;
+  flex-shrink: 0;
 }
 
-.divider.gray{
+.divider.gray {
+  min-height: 1px;
   height: 1px;
   background-color: gray;
   width: 100%;
+  flex-shrink: 0;
 }
 
 .flex {

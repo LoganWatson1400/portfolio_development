@@ -12,12 +12,12 @@
     "experience": {
       "description": "My work and education history"
     },
-    "contact": {
-      "description": "Get in touch with me"
-    },
     "projects": {
       "description": "View a list current projects"
     }, 
+    "contact": {
+      "description": "Get in touch with me"
+    },
     "projects/": {
       "emoteclass": {
         "description": "Emotion Classification"
