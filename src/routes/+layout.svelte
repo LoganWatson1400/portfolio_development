@@ -1,35 +1,91 @@
 <script>
   import favicon from "$lib/assets/favicon.svg";
-  import '../app.css';
+  import "../app.css";
   import { tick, onMount } from "svelte";
+  import { slide, fade } from "svelte/transition";
   import { afterNavigate } from "$app/navigation";
   import CommandTable from "../components/commandTable.svelte";
   import { terminalValue, terminalHistory } from "$lib/stores.js";
+  import { Terminal } from "$lib/terminal/terminal.js";
 
-  import { runCmd, syncPathFromUrl } from "$lib/terminal/terminal";
-
-  
-  let {children} = $props();
+  let { children } = $props();
   let historyEl;
-  let inputEl; 
+  let inputEl;
+
+  let terminal;
+  let currentPath = $state("/");
+
+  // ── terminal history visibility state ──────────────────────────────────────
+  let pinned    = $state(false);   // user toggled "keep open"
+  let isHovered = $state(false);   // mouse is inside the history panel or terminal input
+  let showHistory = $state(false); // master visibility flag
+  let hideTimeout;
+
+  function startHideTimer() {
+    clearTimeout(hideTimeout);
+    // Only schedule a hide when neither pinned nor hovered
+    if (!pinned && !isHovered) {
+      hideTimeout = setTimeout(() => {
+        showHistory = false;
+      }, 3000);
+    }
+  }
+
+  function cancelHideTimer() {
+    clearTimeout(hideTimeout);
+  }
+
+  function onHistoryMouseEnter() {
+    isHovered = true;
+    cancelHideTimer();   // keep visible while hovering
+  }
+
+  function onHistoryMouseLeave() {
+    isHovered = false;
+    startHideTimer();    // begin countdown once mouse leaves
+  }
+
+  function togglePin() {
+    pinned = !pinned;
+    if (pinned) {
+      // pinned → cancel any pending hide
+      cancelHideTimer();
+      showHistory = $terminalHistory.length > 0;
+    } else {
+      // un-pinned → start the hide countdown
+      startHideTimer();
+    }
+  }
+  // ──────────────────────────────────────────────────────────────────────────
 
   onMount(() => {
-    syncPathFromUrl(window.location.pathname);
+    terminal = new Terminal();
+    currentPath = terminal.getPath();
+    inputEl?.focus();
   });
 
-  afterNavigate(({ to }) => {
-    if (to?.url?.pathname) {
-      syncPathFromUrl(to.url.pathname);
-    }
-    setTimeout(() => {
-      inputEl?.focus();
-    }, 50);
+  afterNavigate(() => {
+    setTimeout(() => inputEl?.focus(), 50);
   });
 
+  // Whenever history changes: show the panel, reset the countdown
   $effect(() => {
     $terminalHistory;
+    if ($terminalHistory.length > 0) {
+      showHistory = true;
+      startHideTimer();
+    } else {
+      showHistory = false;
+      cancelHideTimer();
+    }
     scrollToBottom();
   });
+
+  async function runCmd(input) {
+    if (!terminal) return;
+    await terminal.run(input);
+    currentPath = terminal.getPath();
+  }
 
   function handleKey(e) {
     if (e.key === "Enter") {
@@ -52,100 +108,111 @@
   <link rel="icon" href={favicon} />
 </svelte:head>
 
-<!-- root: full viewport, flex column -->
+<!-- root -->
 <div
-  class="box"
-  style="
-  height: 95%;
-  margin: 2vmin;
-  display: flex;
-  flex-direction: column;
-"
->
-  <!--- header --->
-  <div
-    class="box"
-    style="
-    flex-shrink: 0;
-    padding: 16px;
-    padding-bottom: 8px;
+  class="box flex col"
+  style="    
+    height: 95%;
+    margin: 2vmin;
+    gap: 0;
   "
-  >
-    <div style="display: flex; justify-content: space-between;">
+>
+  <!-- header -->
+  <div class="box" style="flex-shrink: 0; padding: 16px 16px 8px;">
+    <div class="flex" style="justify-content: space-between;">
       <h1 style="font-size: clamp(0.5rem, 2vw + 8px, 3rem)">Logan Watson:</h1>
-      <h1>Root</h1>
+      <h1>{currentPath}</h1>
     </div>
     <hr style="height: 1px; background-color: white;" />
   </div>
 
-  <!--- body container --->
+  <!-- body -->
   <div
-    class="box"
-    style="
-    min-height: 0%;
-    border-top: 0;
-    flex: 1;
-    display: flex;
-    padding: 0;
-  "
+    class="box flex"
+    style="min-height: 0; flex: 1; border-top: 0; padding: 0; gap: 0;"
   >
-    <!--- left: pages + terminal --->
+    <!-- left: page + terminal -->
     <div
-      class="box"
-      style="
-      width: 70%;
-      display: flex;
-      flex-direction: column;
-      justify-content: end;
-      padding: 0;
-    "
+      class="box flex col"
+      style="flex: 10 1 0; min-width: 0; justify-content: end; padding: 0;"
     >
-      <!--- pages --->
+      <!-- page -->
       <div
-        style="
-        flex: 1;
-        min-height: 0;
-        overflow: hidden;
-        position: relative;
-      "
+        style="flex: 1; min-height: 0; overflow: hidden; position: relative;"
       >
         <div style="height: 100%; overflow-y: auto; padding: 32px 8px;">
           {@render children()}
         </div>
 
-        {#if $terminalHistory.length > 0}
+        <!-- ── terminal history panel ─────────────────────────────────────── -->
+        {#if $terminalHistory.length > 0 && showHistory}
           <div
             class="terminal"
             bind:this={historyEl}
+            transition:slide={{ duration: 280, axis: "y" }}
+            onmouseenter={onHistoryMouseEnter}
+            onmouseleave={onHistoryMouseLeave}
             style="
               position: absolute;
-              bottom: 0;
-              left: 0;
-              right: 0;
+              bottom: 0; left: 0; right: 0;
               max-height: 50%;
-              overflow: scroll;
+              overflow: auto;
               scrollbar-width: none;
               padding: 8px;
-              background-color: rgba(26, 24, 27, 0.55);
+              background-color: rgba(26,24,27,0.55);
               backdrop-filter: blur(2px);
-              border-top: 1px solid rgba(255, 255, 255, 0.15);
+              border-top: 1px solid rgba(255,255,255,0.15);
             "
           >
+            <!-- pin toggle — replaces the old "clear history" button -->
+            <button
+              onclick={togglePin}
+              class="btn"
+              title={pinned ? "Unpin history (will auto-hide)" : "Pin history open"}
+              style="
+                position: sticky;
+                top: 0;
+                float: right;
+                z-index: 10;
+                cursor: pointer;
+                font-size: 1vw;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                opacity: {pinned ? 1 : 0.6};
+                border-color: {pinned ? 'var(--color-txt-highlight, #aaa)' : 'rgba(255,255,255,0.3)'};
+                transition: opacity 0.2s, border-color 0.2s;
+              "
+            >
+              <!-- simple pin icon -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12" height="12"
+                viewBox="0 0 24 24"
+                fill={pinned ? "currentColor" : "none"}
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" y1="17" x2="12" y2="22"/>
+                <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/>
+              </svg>
+              {pinned ? "pinned" : "pin"}
+            </button>
+
             {#each $terminalHistory as line}
               {#if isTable(line)}
-                <div style="display: flex; flex-direction: column; gap: 0 16px; padding: 2px 0;">
+                <div class="flex col" style="gap: 0; padding: 2px 0;">
                   {#each line.rows as row}
-                    <div style="display: flex; flex-wrap: nowrap;">
-                    <div style="margin-left: 5%;"></div>
+                    <div class="flex" style="flex-wrap: nowrap;">
+                      <div style="margin-left: 5%;"></div>
                       {#each row as col, i}
-
                         <span
                           class="terminal"
-                          style="
-                          {(i % 3) === 0? 'flex: 2 3 5%' : ''}
-                          {(i % 3) === 1? 'flex: 1 6 5%' : ''}
-                          {(i % 3) === 2? 'flex: 9 1 5%' : ''}
-                          ">{col}</span
+                          style="{i % 3 === 0 ? 'flex:2 3 5%' : ''}{i % 3 === 1
+                            ? 'flex:1 6 5%'
+                            : ''}{i % 3 === 2 ? 'flex:9 1 5%' : ''}">{col}</span
                         >
                       {/each}
                     </div>
@@ -157,25 +224,28 @@
             {/each}
           </div>
         {/if}
+        <!-- ─────────────────────────────────────────────────────────────── -->
       </div>
 
-      <!--- terminal --->
+      <!-- terminal input -->
       <div
-        class="terminal input"
-        style="display: flex; background-color: #333;"
+        class="terminal input flex"
+        style="background-color: #333;"
+        onmouseenter={onHistoryMouseEnter}
+        onmouseleave={onHistoryMouseLeave}
       >
         <input
           bind:this={inputEl}
           type="text"
           autofocus
           style="
-            padding: 2px;
+            padding: 2px; 
             flex: 1; 
             background: none; 
             border: none; 
-            color: var(--color-txt-primary);
-            outline: none;
-            font-size: clamp(0.5rem, 1vw + 8px, 3rem)
+            color: var(--color-txt-primary); 
+            outline: none; 
+            font-size: clamp(0.5rem, 1vw + 8px, 3rem);
             "
           value={$terminalValue}
           oninput={(e) => terminalValue.set(e.target.value)}
@@ -184,23 +254,25 @@
       </div>
     </div>
 
-    <!--- commands --->
+    <!-- command table -->
     <div
       class="box"
       style="
-      width: 30%;
-      border-left: 0;
-      overflow-y: auto;
-    "
+        flex: 2 20 0; 
+        min-width: fit-content; 
+        padding: 1%;
+        border-left: 0; 
+        overflow: hidden;
+      "
     >
-      <CommandTable run={
-        async (cmd) => { 
-          terminalValue.set(cmd); 
-          await runCmd(cmd); 
-          terminalValue.set(''); 
-          inputEl?.focus(); 
-        }
-      } />
+      <CommandTable
+        run={async (cmd) => {
+          terminalValue.set(cmd);
+          await runCmd(cmd);
+          terminalValue.set("");
+          inputEl?.focus();
+        }}
+      />
     </div>
   </div>
 </div>

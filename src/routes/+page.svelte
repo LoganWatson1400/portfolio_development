@@ -1,97 +1,100 @@
-<div class="page-root flex col">
-  <div class="card secondary"
-    style="
-      width: 100%;
-      padding: 24px 32px;
-    ">
-    <p style="font-size: clamp(1rem, 2vw, 1.4rem); line-height: 1.7;">
-      <b>Welcome to my portfolio.</b> <br />
-      Type
-      <strong style="color: var(--color-txt-highlight);">ls</strong>
-      to list pages,
-      <strong style="color: var(--color-txt-highlight);"
-        >cat &lt;file&gt;</strong
-      >
-      to read one, or
-      <strong style="color: var(--color-txt-highlight);">cd &lt;dir&gt;</strong>
-      to navigate. <br /> You can also click from the panel on the right.
-    </p>
-  </div>
+<script>
+  import ascii from "$lib/data/ascii.json";
+  import { onMount } from "svelte";
 
-  <div class="card secondary flex"
+  let chars = [];
+  let maxCol = 0;
+
+  const charWidth = 8;
+  const charHeight = 16;
+
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  /* ---------- shuffle ---------- */
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  /* ---------- merge ---------- */
+  function merge(left, right) {
+    const result = [];
+    while (left.length && right.length) {
+      if (left[0].index < right[0].index) {
+        result.push(left.shift());
+      } else {
+        result.push(right.shift());
+      }
+    }
+    return [...result, ...left, ...right];
+  }
+
+  /* ---------- recursive merge sort with live update ---------- */
+  async function mergeSort(arr, start = 0) {
+    if (arr.length <= 1) return arr;
+
+    const mid = Math.floor(arr.length / 2);
+    const left = await mergeSort(arr.slice(0, mid), start);
+    const right = await mergeSort(arr.slice(mid), start + mid);
+
+    const merged = merge(left, right);
+
+    // Update chars for this section
+    for (let i = 0; i < merged.length; i++) {
+      chars[start + i] = merged[i];
+    }
+    chars = [...chars]; // trigger reactive update
+
+    await sleep(0); // pause so we can see the section update
+
+    return merged;
+  }
+
+  /* ---------- run ---------- */
+  async function run() {
+    maxCol = Math.max(...ascii.map((a) => a.col)) + 1;
+
+    // initial shuffle
+    chars = shuffle([...ascii]);
+    chars = [...chars]; // trigger DOM
+
+    await sleep(500);
+
+    // sort & update section by section
+    await mergeSort(chars, 0);
+  }
+
+  onMount(run);
+</script>
+
+<div class="stage">
+  {#each chars as c, i}
+    <span
+      class="pixel"
       style="
-        width: 100%;
-        padding: 32px;
-        align-items: center;
-        gap: 48px;
-        flex-wrap: wrap;
-      ">
-    <div
-      class="flex col"
-      style="
-        flex: 2; 
-        gap: 12px; 
-        min-width: 200px;
+        left:{(i % maxCol) * charWidth}px;
+        top:{Math.floor(i / maxCol) * charHeight}px;
+        color:{c.color};
       "
     >
-      <h1 class="identity-name">Logan<br />Watson</h1>
-      <p
-        class="terminal"
-        style="
-          color: var(--color-txt-secondary); 
-          letter-spacing: 0.1em; 
-          font-size: 0.75rem;
-        "
-      >
-       FULL STACK DEVELOPER 
-      </p>
-      <hr class="divider white"/>
-      <p
-        style="
-          color: var(--color-txt-secondary); 
-          line-height: 1.6; 
-          font-size: 0.9rem;
-        "
-      >
-        CS student at UW-Milwaukee. I build across the stack: web apps, ML
-        tools, and games.
-      </p>
-      <div class="flex" style="gap: 12px; flex-wrap: wrap; justify-content: center;">
-        <a href="/about"><button class="btn">About</button></a>
-        <a href="/projects"><button class="btn">Projects</button></a>
-        <a href="/contact"><button class="btn">Contact</button></a>
-      </div>
-    </div>
-
-      <img
-        src="/img/dragon.jpg"
-        alt=""
-        style="
-          flex: 1 1 300px;
-          min-width: 200px;
-          object-fit: cover; 
-          border-radius: 8px;
-        "
-      />
-  </div>
+      {(c.char === '.' || c.char === '/') ? '\u00A0' : c.char}
+    </span>
+  {/each}
 </div>
 
 <style>
-  .page-root {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 2% 5%;
-    height: fit-content;
-    width: 90%;
-    justify-self: center;
-    overflow: scroll;
-    gap: 12px;
+  .stage {
+    font-family: "Courier New", Courier, monospace;
+    line-height: 1;
+    font-size: 16px;
   }
-
-  .identity-name {
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+  .pixel {
+    position: absolute;
+    white-space: pre;
+    letter-spacing: 0.4ch;
   }
-
 </style>
