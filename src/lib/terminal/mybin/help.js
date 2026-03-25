@@ -18,14 +18,15 @@ export default class Help extends Command {
   constructor() {
     super({
       name:        "help",
-      usage:       "help [op]",
+      usage:       "help, help [op], h, h [op]",
       description: "List all commands, or show detail for one command",
     });
   }
 
-  async execute({ args }) {
+  async execute({ terminal, args }) {
     if (args.length > 0) {
-      const target = args[0].toLowerCase();
+      var target = args[0].toLowerCase();
+      target = terminal.command_alts[target] ?? target
       try {
         const mod = await import(`./${target}.js`);
         const cmd = new mod.default();

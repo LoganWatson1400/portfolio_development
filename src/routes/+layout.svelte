@@ -199,9 +199,6 @@
       overflow-y: auto;
     "
     >
-      <script>
-        /*
-
       <CommandTable run={
         async (cmd) => {
           terminalValue.set(cmd);
@@ -210,8 +207,6 @@
           inputEl?.focus();
         }
       } />
-        */
-      </script>
     </div>
   </div>
 </div>

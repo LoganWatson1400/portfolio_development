@@ -5,103 +5,114 @@
   export let run = async (cmd) => terminalValue.set(cmd);
   export let pathStack = [];
 
-  $: currentDir  = getCurrentDir(pathStack) ?? {};
-  $: entries     = Object.entries(currentDir);
-  $: dirs        = entries.filter(([key]) => isDir(key));
-  $: files       = entries.filter(([key]) => !isDir(key));
+  $: currentDir = getCurrentDir(pathStack) ?? {};
+  $: entries = Object.entries(currentDir);
+  $: dirs = entries.filter(([key]) => isDir(key));
+  $: files = entries.filter(([key]) => !isDir(key));
 
   const META_COMMANDS = ["help", "pwd", "whoami", "clear"];
+  const META_DESCRIPTIONS = {
+    help: "Show available commands",
+    pwd: "Print current path",
+    whoami: "About Logan Watson",
+    clear: "Clear the terminal",
+  };
 </script>
 
-<table>
-  <thead>
-    <tr style="font-size: clamp(0.5rem, 1vw + 8px, 3rem)">
-      <td style="text-align: start;"><h1>Commands</h1></td>
-      <td class="command__description" style="text-align: end;"><h1>Def</h1></td>
-    </tr>
-  </thead>
+<div class="panel flex col">
+  <!-- header -->
+  <div class="row">
+    <h1>Cmds</h1>
+    <h1 class="command__description">Def</h1>
+  </div>
+  <div class="divider white" />
 
-  <tbody>
+  <!-- cd -->
+  {#if dirs.length > 0 || pathStack.length > 0}
+    <div class="row"><h3 class="label">cd</h3></div>
+    <div class="divider white" />
 
-    <!-- ── cd ──────────────────────────────────────────────────── -->
-    {#if dirs.length > 0 || pathStack.length > 0}
-      <tr>
-        <td colspan="2">
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <h3>cd</h3>
-            <hr style="height: 1px; border: none; background-color: white;" />
+    <div class="sublist flex col">
+      <button class="row btn-command" onclick={() => run("cd /")}>
+        <h3>/</h3>
+      </button>
+      <div class="divider gray" />
+      <button class="row btn-command" onclick={() => run("cd ..")}>
+        <h3>..</h3>
+      </button>
 
-            {#if pathStack.length > 0}
-              <button class="btn-command" onclick={() => run("cd ..")}
-                style="width: 100%; text-align: start; margin-left: 10%;">
-                <h3>../</h3>
-                <div style="color: var(--color-txt-secondary); font-size: 0.85em;">Parent directory</div>
-              </button>
-              <hr style="height: 1px; border: none; background-color: gray;" />
-            {/if}
+      {#each dirs as [key, value], i}
+        <div class="divider gray" />
+        <button
+          class="row btn-command"
+          onclick={() => run("cd " + dirName(key))}
+        >
+          <h3>{dirName(key)}/</h3>
+          <span class="command__description desc"
+            >{value.description ?? ""}</span
+          >
+        </button>
+      {/each}
+    </div>
 
-            {#each dirs as [key, value]}
-              <button class="btn-command" onclick={() => run("cd " + dirName(key))}
-                style="width: 100%; text-align: start; margin-left: 10%;">
-                <div style="display: flex; flex-direction: column; width: 100%; justify-content: space-between;">
-                  <h3>{dirName(key)}/</h3>
-                  <div style="text-align: right; padding-left: 4px; color: var(--color-txt-secondary);">
-                    {value.description ?? ""}
-                  </div>
-                </div>
-              </button>
-              <hr style="height: 1px; border: none; background-color: gray;" />
-            {/each}
-          </div>
-        </td>
-      </tr>
-    {/if}
+    <div class="divider white" />
+  {/if}
 
-    <!-- ── cat ─────────────────────────────────────────────────── -->
-    {#if files.length > 0}
-      <tr>
-        <td colspan="2">
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <h3>cat</h3>
-            <hr style="height: 1px; border: none; background-color: white;" />
+  <!-- cat -->
+  {#if files.length > 0}
+    <div class="row"><h3 class="label">cat</h3></div>
+    <div class="divider white" />
 
-            {#each files as [key, value]}
-              <button class="btn-command" onclick={() => run("cat " + key)}
-                style="width: 100%; text-align: start; margin-left: 10%;">
-                <div style="display: flex; flex-direction: column; width: 100%; justify-content: space-between;">
-                  <h3>{key}</h3>
-                  <div style="text-align: right; padding-left: 4px; color: var(--color-txt-secondary);">
-                    {value.description ?? ""}
-                  </div>
-                </div>
-              </button>
-              <hr style="height: 1px; border: none; background-color: gray;" />
-            {/each}
-          </div>
-        </td>
-      </tr>
-    {/if}
+    <div class="sublist flex col">
+      {#each files as [key], i}
+        {#if i > 0}<div class="divider gray" />{/if}
+        <button class="row btn-command" onclick={() => run("cat " + key)}>
+          <h3>{key}</h3>
+        </button>
+      {/each}
+    </div>
 
-    <!-- ── meta ────────────────────────────────────────────────── -->
-    {#each META_COMMANDS as cmd}
-      <tr>
-        <td>
-          <button class="btn-command" onclick={() => run(cmd)}
-            style="width: 100%; height: 100%; text-align: start;">
-            <h3>{cmd}</h3>
-          </button>
-        </td>
-        <td class="command__description" style="width: 35%; text-align: end;">
-          <button class="btn-command" onclick={() => run(cmd)}
-            style="width: 100%; height: 100%; text-align: end;">
-            {cmd === "help"   ? "Show available commands" : ""}
-            {cmd === "pwd"    ? "Print current path"      : ""}
-            {cmd === "whoami" ? "About Logan Watson"      : ""}
-            {cmd === "clear"  ? "Clear the terminal"      : ""}
-          </button>
-        </td>
-      </tr>
-    {/each}
+    <div class="divider white" />
+  {/if}
 
-  </tbody>
-</table>
+  <!-- meta -->
+  {#each META_COMMANDS as cmd, i}
+    {#if i > 0}<div class="divider gray" />{/if}
+    <button class="row btn-command" onclick={() => run(cmd)}>
+      <h3>{cmd}</h3>
+      <span class="command__description desc">{META_DESCRIPTIONS[cmd]}</span>
+    </button>
+  {/each}
+</div>
+
+<style>
+  .panel {
+    height: 100%;
+    width: 100%;
+    gap: 2px;
+    overflow-y: auto;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 2px 4px;
+  }
+
+  .sublist {
+    padding-left: 10%;
+    gap: 2px;
+  }
+
+  .label {
+    color: gray;
+  }
+
+  .desc {
+    color: var(--color-txt-secondary);
+    font-size: 0.85em;
+    text-align: right;
+  }
+</style>

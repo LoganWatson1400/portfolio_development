@@ -3,7 +3,6 @@ import { terminalHistory } from "$lib/stores.js";
 import tree from "$lib/data/tree.json";
 
 const PATH_KEY = "terminal_path";
-
 // ── nav helpers ───────────────────────────────────────────────────────────────
 
 /**
@@ -19,8 +18,6 @@ const PATH_KEY = "terminal_path";
 export function getCurrentDir(pathArr) {
   if (pathArr.length === 0) return tree["/"];
 
-  // Only one level of nesting is supported in the flat structure.
-  // The last segment is the directory key (with trailing slash).
   const dirKey = pathArr[pathArr.length - 1] + "/";
   return tree["/"][dirKey] ?? null;
 }
@@ -49,6 +46,14 @@ export class Terminal {
   constructor() {
     /** @type {string[]} e.g. [] = root, ["projects"] = inside projects */
     this.pathStack = [];
+    this.command_alts = {
+      cls: "clear",
+      cl: "clear",
+      q: "quit",
+      exit: "quit",
+      h: "help"
+    }
+
     this._restorePathStack();
   }
 
@@ -93,7 +98,9 @@ export class Terminal {
 
   async _dispatch(input) {
     const [op, ...args] = input.split(/\s+/);
-    const name = op.toLowerCase();
+    let name = op.toLowerCase();
+    name = this.command_alts[name]??name;
+
     const helpFlag = args.includes("--help");
 
     let CommandClass;
