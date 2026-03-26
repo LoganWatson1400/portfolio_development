@@ -16,18 +16,17 @@
   let currentPath = $state("/");
 
   // ── terminal history visibility state ──────────────────────────────────────
-  let pinned    = $state(false);   // user toggled "keep open"
-  let isHovered = $state(false);   // mouse is inside the history panel or terminal input
+  let pinned = $state(false); // user toggled "keep open"
+  let isHovered = $state(false); // mouse is inside the history panel or terminal input
   let showHistory = $state(false); // master visibility flag
   let hideTimeout;
 
   function startHideTimer() {
     clearTimeout(hideTimeout);
-    // Only schedule a hide when neither pinned nor hovered
     if (!pinned && !isHovered) {
       hideTimeout = setTimeout(() => {
         showHistory = false;
-      }, 3000);
+      }, 5000);
     }
   }
 
@@ -37,12 +36,12 @@
 
   function onHistoryMouseEnter() {
     isHovered = true;
-    cancelHideTimer();   // keep visible while hovering
+    cancelHideTimer(); // keep visible while hovering
   }
 
   function onHistoryMouseLeave() {
     isHovered = false;
-    startHideTimer();    // begin countdown once mouse leaves
+    startHideTimer(); // begin countdown once mouse leaves
   }
 
   function togglePin() {
@@ -118,12 +117,18 @@
   "
 >
   <!-- header -->
-  <div class="box" style="flex-shrink: 0; padding: 16px 16px 8px;">
-    <div class="flex" style="justify-content: space-between;">
-      <h1 style="font-size: clamp(0.5rem, 2vw + 8px, 3rem)">Logan Watson:</h1>
+  <div class="box" style="flex-shrink: 1; padding: 1%;">
+    <div
+      class="flex"
+      style="
+        justify-content: space-between;
+        font-size: 1vw;
+      "
+    >
+      <h1>Logan Watson:</h1>
       <h1>{currentPath}</h1>
     </div>
-    <hr style="height: 1px; background-color: white;" />
+    <div class="divider"></div>
   </div>
 
   <!-- body -->
@@ -140,14 +145,22 @@
       <div
         style="flex: 1; min-height: 0; overflow: hidden; position: relative;"
       >
-        <div style="height: 100%; overflow-y: auto; padding: 32px 8px;">
+        <div
+          style="
+            height: 100%; 
+            overflow-y: auto; 
+            padding: 32px 8px;
+          "
+        >
           {@render children()}
         </div>
 
-        <!-- ── terminal history panel ─────────────────────────────────────── -->
+        <!--── terminal history panel ───────────────────────────────────────-->
         {#if $terminalHistory.length > 0 && showHistory}
           <div
             class="terminal"
+            role="log"
+            aria-label="Terminal History"
             bind:this={historyEl}
             transition:slide={{ duration: 280, axis: "y" }}
             onmouseenter={onHistoryMouseEnter}
@@ -157,7 +170,7 @@
               bottom: 0; left: 0; right: 0;
               max-height: 50%;
               overflow: auto;
-              scrollbar-width: none;
+              scrollbar-width: 2vw;
               padding: 8px;
               background-color: rgba(26,24,27,0.55);
               backdrop-filter: blur(2px);
@@ -167,8 +180,7 @@
             <!-- pin toggle — replaces the old "clear history" button -->
             <button
               onclick={togglePin}
-              class="btn"
-              title={pinned ? "Unpin history (will auto-hide)" : "Pin history open"}
+              class="btn flex"
               style="
                 position: sticky;
                 top: 0;
@@ -176,28 +188,18 @@
                 z-index: 10;
                 cursor: pointer;
                 font-size: 1vw;
-                display: flex;
-                align-items: center;
                 gap: 4px;
-                opacity: {pinned ? 1 : 0.6};
-                border-color: {pinned ? 'var(--color-txt-highlight, #aaa)' : 'rgba(255,255,255,0.3)'};
-                transition: opacity 0.2s, border-color 0.2s;
+                border-color: {pinned
+                ? 'var(--color-txt-highlight, #aaa)'
+                : 'rgba(255,255,255,0.3)'};
               "
             >
               <!-- simple pin icon -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="12" height="12"
-                viewBox="0 0 24 24"
-                fill={pinned ? "currentColor" : "none"}
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <line x1="12" y1="17" x2="12" y2="22"/>
-                <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/>
-              </svg>
+              <img
+                src="/img/pin.svg"
+                alt="Pin"
+                style="width:10px; height:10px; filter: invert(1);"
+              />
               {pinned ? "pinned" : "pin"}
             </button>
 
@@ -224,20 +226,22 @@
             {/each}
           </div>
         {/if}
-        <!-- ─────────────────────────────────────────────────────────────── -->
       </div>
 
       <!-- terminal input -->
       <div
         class="terminal input flex"
-        style="background-color: #333;"
+        role="region"
+        aria-label="Terminal"
+        style="
+          background-color: #333;
+        "
         onmouseenter={onHistoryMouseEnter}
         onmouseleave={onHistoryMouseLeave}
       >
         <input
           bind:this={inputEl}
           type="text"
-          autofocus
           style="
             padding: 2px; 
             flex: 1; 
