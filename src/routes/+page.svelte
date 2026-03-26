@@ -1,16 +1,19 @@
 <script>
   import ascii from "$lib/data/ascii.json";
   import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
 
   let chars = [];
   let maxCol = 0;
 
-  const charWidth = 8;
-  const charHeight = 16;
+  // Manual scaling factor for character width (in vw)
+  let scale = 0.4; 
 
+  let lineHeightFactor = 1.5; // e.g., 2 means each line is twice the scale
+
+  const minSleep = 1;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  /* ---------- shuffle ---------- */
   function shuffle(arr) {
     const a = [...arr];
     for (let i = a.length - 1; i > 0; i--) {
@@ -20,81 +23,114 @@
     return a;
   }
 
-  /* ---------- merge ---------- */
-  function merge(left, right) {
-    const result = [];
-    while (left.length && right.length) {
-      if (left[0].index < right[0].index) {
-        result.push(left.shift());
-      } else {
-        result.push(right.shift());
-      }
+  async function merge(arr, start, mid, end) {
+    const merged = [];
+    let i = start, j = mid;
+    while (i < mid && j < end) {
+      if (arr[i].index < arr[j].index) merged.push(arr[i++]);
+      else merged.push(arr[j++]);
     }
-    return [...result, ...left, ...right];
+    while (i < mid) merged.push(arr[i++]);
+    while (j < end) merged.push(arr[j++]);
+    for (let k = 0; k < merged.length; k++) arr[start + k] = merged[k];
+
+    if (end - start >= 6) {
+      chars = [...arr];
+      await sleep(minSleep);
+    }
   }
 
-  /* ---------- recursive merge sort with live update ---------- */
-  async function mergeSort(arr, start = 0) {
-    if (arr.length <= 1) return arr;
+  async function mergeSort(arr, start = 0, end = arr.length) {
+    if (end - start <= 1) return;
 
-    const mid = Math.floor(arr.length / 2);
-    const left = await mergeSort(arr.slice(0, mid), start);
-    const right = await mergeSort(arr.slice(mid), start + mid);
+    const mid = Math.floor((start + end) / 2);
+    await mergeSort(arr, start, mid);
+    await mergeSort(arr, mid, end);
 
-    const merged = merge(left, right);
-
-    // Update chars for this section
-    for (let i = 0; i < merged.length; i++) {
-      chars[start + i] = merged[i];
-    }
-    chars = [...chars]; // trigger reactive update
-
-    await sleep(0); // pause so we can see the section update
-
-    return merged;
+    await merge(arr, start, mid, end);
   }
 
-  /* ---------- run ---------- */
   async function run() {
     maxCol = Math.max(...ascii.map((a) => a.col)) + 1;
-
-    // initial shuffle
     chars = shuffle([...ascii]);
-    chars = [...chars]; // trigger DOM
+    chars = [...chars];
+    await sleep(minSleep);
 
-    await sleep(500);
+    const n = chars.length;
+    const quarter = Math.floor(n / 4);
 
-    // sort & update section by section
-    await mergeSort(chars, 0);
+    await Promise.all([
+      mergeSort(chars, 0, quarter),
+      mergeSort(chars, quarter, 2 * quarter),
+      mergeSort(chars, 2 * quarter, 3 * quarter),
+      mergeSort(chars, 3 * quarter, n),
+    ]);
+
+    await sleep(300);
+    await Promise.all([
+      merge(chars, 0, quarter, 2 * quarter),
+      merge(chars, 2 * quarter, 3 * quarter, n),
+    ]);
+
+    await sleep(300);
+    await merge(chars, 0, 2 * quarter, n);
+
+    const beginEl = document.getElementById("begin");
+    if (beginEl) beginEl.textContent = "Welcome To My Portfolio";
+
+    await sleep(5000);
+    goto("/welcome");
   }
 
   onMount(run);
 </script>
 
-<div class="stage">
-  {#each chars as c, i}
-    <span
-      class="pixel"
-      style="
-        left:{(i % maxCol) * charWidth}px;
-        top:{Math.floor(i / maxCol) * charHeight}px;
-        color:{c.color};
-      "
-    >
-      {(c.char === '.' || c.char === '/') ? '\u00A0' : c.char}
-    </span>
-  {/each}
+<div
+  class="flex col"
+  style="justify-content: center; align-items: center; width: 100%; height: 100%;"
+>
+  <div
+    class="stage"
+    style="
+      --scale: {scale}vw;
+      --line-height: {lineHeightFactor};
+      position: relative;
+      width: calc(var(--scale) * {maxCol});
+      height: calc(var(--scale) * var(--line-height) * {Math.ceil(chars.length / maxCol)});
+    "
+  >
+    {#each chars as c, i}
+      <span
+        class="pixel"
+        style="
+          left: calc(var(--scale) * {(i % maxCol)});
+          top: calc(var(--scale) * var(--line-height) * {Math.floor(i / maxCol)});
+          color: {c.color};
+          font-size: calc(var(--scale) * var(--line-height));
+        "
+      >
+        {c.char === "." || c.char === "/" ? "\u00A0" : c.char}
+      </span>
+    {/each}
+  </div>
+
+  <div
+    id="begin"
+    style="margin-top: 20px; font-size: 24px; color: #fff; text-align: center;"
+  ></div>
 </div>
 
 <style>
   .stage {
     font-family: "Courier New", Courier, monospace;
     line-height: 1;
-    font-size: 16px;
   }
   .pixel {
     position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     white-space: pre;
-    letter-spacing: 0.4ch;
+    letter-spacing: 0.1ch;
   }
 </style>

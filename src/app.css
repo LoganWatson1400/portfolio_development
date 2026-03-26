@@ -69,9 +69,9 @@ table {
 }
 
 .box {
-  border: 1px solid var(--color-card-border);
+  border: 0.01vw solid var(--color-card-border);
   color: var(--color-txt-primary);
-  padding: 4px;
+  padding: 0.1vw;
 }
 
 .card {
@@ -159,20 +159,16 @@ table {
   outline: none;
 }
 
-.divider.white {
-  min-height: 1px;
-  height: 1px;
+.divider {
+  min-height: 0.1vw;
+  height: 0.1vw;
   background-color: white;
   width: 100%;
   flex-shrink: 0;
 }
 
 .divider.gray {
-  min-height: 1px;
-  height: 1px;
   background-color: gray;
-  width: 100%;
-  flex-shrink: 0;
 }
 
 .flex {
