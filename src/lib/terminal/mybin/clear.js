@@ -1,7 +1,7 @@
 import { Command } from "./command.js";
 import { getCurrentDir, isDir, dirName } from "$lib/terminal/terminal.js";
 
-export default class Clear extends Command {
+export default class clear extends Command {
   constructor() {
     super({
       name:        "clear",
