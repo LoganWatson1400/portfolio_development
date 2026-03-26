@@ -1,8 +1,7 @@
 <script>
-  import { terminalValue } from "$lib/stores.js";
-  import { runCmd, gotoWithoutSync } from "$lib/terminal/terminal";
+  import { Terminal } from "$lib/terminal/terminal.js";
 
-  export let project = {
+  let { project = {
     title: "Default Project",
     route: "",
     description: "No Project Description",
@@ -10,19 +9,19 @@
     image_alt: "Project Image",
     tags: [],
     link: "#",
-  };
+  }} = $props();
 
-  export let run = async (cmd) => {
-    terminalValue.set(cmd);
-    await runCmd(cmd);
-    terminalValue.set("");
-  };
+  const terminal = new Terminal();
 
-  $: slug = project.route.replace(/^projects\//, "");
-  $: href = project.route !== "" ? `/projects/${slug}` : null;
+  const slug = project.route.replace(/^projects\//, "");
+  const href = project.route !== "" ? `/projects/${slug}` : null;
+
+  async function navigate() {
+    if (!href) return;
+    await terminal.navigate(href);
+  }
 </script>
 
-<!-- app.css: "flex col" covers display:flex + flex-direction:column -->
 <div class="card secondary project-card flex col" class:interactive={href !== null}>
 
   <div class="flex" style="width: 100%; justify-content: space-between;">
@@ -34,7 +33,7 @@
           class="stretched-link"
           {href}
           aria-label="View {project.title} project"
-          on:click|preventDefault={() => gotoWithoutSync(href)}
+          onclick={(e) => { e.preventDefault(); navigate(); }}
         ></a>
       {/if}
     </div>
@@ -59,7 +58,6 @@
 </div>
 
 <style>
-  /* ─── Card shell ─────────────────────────────────────────── */
   .project-card {
     flex: 1;
     min-width: 250px;
@@ -70,7 +68,6 @@
     position: relative;
   }
 
-  /* ─── Title area ─────────────────────────────────────────── */
   .project-title-row {
     height: fit-content;
     flex: 1 0 auto;
@@ -87,7 +84,6 @@
     flex: 1 3 auto;
   }
 
-  /* ─── Image area ─────────────────────────────────────────── */
   .project-img {
     flex: 1 0 auto;
     width: 100%;
@@ -96,7 +92,6 @@
     overflow: hidden;
   }
 
-  /* ─── Description ────────────────────────────────────────── */
   .project-description-wrap {
     flex: 1 1 100%;
     position: relative;
@@ -122,7 +117,6 @@
     pointer-events: none;
   }
 
-  /* ─── Stretched link ─────────────────────────────────────── */
   .stretched-link::after {
     content: "";
     position: absolute;
@@ -131,7 +125,6 @@
     border-radius: inherit;
   }
 
-  /* ─── Interactive card states ────────────────────────────── */
   .card.interactive {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
@@ -147,7 +140,6 @@
     outline-offset: 2px;
   }
 
-  /* Keep any future interactive children above the stretched overlay */
   .project-card :global(button),
   .project-card :global(a:not(.stretched-link)) {
     position: relative;

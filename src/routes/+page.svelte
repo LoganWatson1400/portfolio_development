@@ -1,104 +1,136 @@
-<div class="page-root flex col">
-  <div class="card secondary hint-card">
-    <p style="font-size: clamp(1rem, 2vw, 1.4rem); line-height: 1.7;">
-      <b>Welcome to my portfolio.</b> <br />
-      Type
-      <strong style="color: var(--color-txt-highlight);">ls</strong>
-      to list pages,
-      <strong style="color: var(--color-txt-highlight);"
-        >cat &lt;file&gt;</strong
+<script>
+  import ascii from "$lib/data/ascii.json";
+  import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
+
+  let chars = [];
+  let maxCol = 0;
+
+  // Manual scaling factor for character width (in vw)
+  let scale = 0.4; 
+
+  let lineHeightFactor = 1.5; // e.g., 2 means each line is twice the scale
+
+  const minSleep = 1;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  async function merge(arr, start, mid, end) {
+    const merged = [];
+    let i = start, j = mid;
+    while (i < mid && j < end) {
+      if (arr[i].index < arr[j].index) merged.push(arr[i++]);
+      else merged.push(arr[j++]);
+    }
+    while (i < mid) merged.push(arr[i++]);
+    while (j < end) merged.push(arr[j++]);
+    for (let k = 0; k < merged.length; k++) arr[start + k] = merged[k];
+
+    if (end - start >= 6) {
+      chars = [...arr];
+      await sleep(minSleep);
+    }
+  }
+
+  async function mergeSort(arr, start = 0, end = arr.length) {
+    if (end - start <= 1) return;
+
+    const mid = Math.floor((start + end) / 2);
+    await mergeSort(arr, start, mid);
+    await mergeSort(arr, mid, end);
+
+    await merge(arr, start, mid, end);
+  }
+
+  async function run() {
+    maxCol = Math.max(...ascii.map((a) => a.col)) + 1;
+    chars = shuffle([...ascii]);
+    chars = [...chars];
+    await sleep(minSleep);
+
+    const n = chars.length;
+    const quarter = Math.floor(n / 4);
+
+    await Promise.all([
+      mergeSort(chars, 0, quarter),
+      mergeSort(chars, quarter, 2 * quarter),
+      mergeSort(chars, 2 * quarter, 3 * quarter),
+      mergeSort(chars, 3 * quarter, n),
+    ]);
+
+    await sleep(300);
+    await Promise.all([
+      merge(chars, 0, quarter, 2 * quarter),
+      merge(chars, 2 * quarter, 3 * quarter, n),
+    ]);
+
+    await sleep(300);
+    await merge(chars, 0, 2 * quarter, n);
+
+    const beginEl = document.getElementById("begin");
+    if (beginEl) beginEl.textContent = "Welcome To My Portfolio";
+
+    await sleep(5000);
+    goto("/welcome");
+  }
+
+  onMount(run);
+</script>
+
+<div
+  class="flex col"
+  style="justify-content: center; align-items: center; width: 100%; height: 100%;"
+>
+  <div
+    class="stage"
+    style="
+      --scale: {scale}vw;
+      --line-height: {lineHeightFactor};
+      position: relative;
+      width: calc(var(--scale) * {maxCol});
+      height: calc(var(--scale) * var(--line-height) * {Math.ceil(chars.length / maxCol)});
+    "
+  >
+    {#each chars as c, i}
+      <span
+        class="pixel"
+        style="
+          left: calc(var(--scale) * {(i % maxCol)});
+          top: calc(var(--scale) * var(--line-height) * {Math.floor(i / maxCol)});
+          color: {c.color};
+          font-size: calc(var(--scale) * var(--line-height));
+        "
       >
-      to read one, or
-      <strong style="color: var(--color-txt-highlight);">cd &lt;dir&gt;</strong>
-      to navigate. <br /> You can also click from the panel on the right.
-    </p>
+        {c.char === "." || c.char === "/" ? "\u00A0" : c.char}
+      </span>
+    {/each}
   </div>
 
-  <div class="card secondary flex main-card">
-    <div
-      class="flex col"
-      style="
-        flex: 1; 
-        gap: 12px; 
-        min-width: 0; 
-      "
-    >
-      <h1 class="identity-name">Logan<br />Watson</h1>
-      <p
-        class="terminal"
-        style="
-          color: var(--color-txt-secondary); 
-          letter-spacing: 0.1em; 
-          font-size: 0.75rem;
-        "
-      >
-       FULL STACK DEVELOPER 
-      </p>
-      <hr class="divider white" style="width: 48px;" />
-      <p
-        style="
-          color: var(--color-txt-secondary); 
-          line-height: 1.6; 
-          font-size: 0.9rem;
-        "
-      >
-        CS student at UW-Milwaukee. I build across the stack: web apps, ML
-        tools, and games.
-      </p>
-      <div class="flex" style="gap: 12px; flex-wrap: wrap;">
-        <a href="/about"><button class="btn">About</button></a>
-        <a href="/projects"><button class="btn">Projects</button></a>
-        <a href="/contact"><button class="btn">Contact</button></a>
-      </div>
-    </div>
-
-    <div class="card image-card">
-      <img
-        src="/img/dragon.jpg"
-        alt=""
-        style="
-          width: 100%; 
-          height: 100%; 
-          object-fit: cover; 
-          border-radius: 8px;
-        "
-      />
-    </div>
-  </div>
+  <div
+    id="begin"
+    style="margin-top: 20px; font-size: 24px; color: #fff; text-align: center;"
+  ></div>
 </div>
 
 <style>
-  .page-root {
-    padding: 2% 5%;
-    height: 100%;
-    overflow: hidden;
-    gap: 12px;
+  .stage {
+    font-family: "Courier New", Courier, monospace;
+    line-height: 1;
   }
-
-  .hint-card {
-    width: 100%;
-    padding: 24px 32px;
-  }
-
-  .main-card {
-    flex: 1;
-    min-height: 0;
-    padding: 32px;
+  .pixel {
+    position: absolute;
+    display: flex;
     align-items: center;
-    gap: 48px;
-  }
-
-  .identity-name {
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-  }
-
-  .image-card {
-    flex: 1;
-    min-height: 0;
-    height: 100%;
-    overflow: hidden;
-    max-width: 50%;
+    justify-content: center;
+    white-space: pre;
+    letter-spacing: 0.1ch;
   }
 </style>
