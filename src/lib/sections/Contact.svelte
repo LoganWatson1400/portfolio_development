@@ -1,7 +1,7 @@
 <section
   id="Contact"
   style="
-    padding: 0px 10%; 
+    padding: 5% 10%; 
     justify-self: center;
     width: 100%;
     max-width: 1300px;
@@ -43,7 +43,8 @@
         style="
           gap: 12px; 
           color: var(--color-txt-secondary);
-          "
+          font-size: clamp(0.5rem, 4vw + 1px, 2.5rem);
+        "
       >
         <a
           href="tel:+19203795628"

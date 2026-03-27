@@ -4,7 +4,7 @@
     class="flex"
     style="flex-wrap: wrap; justify-content: center; padding: 0px 5%;"
   >
-    <div class="flex col" style="flex: 1 1 300px; max-width: 600px;">
+    <div class="flex col" style="flex: 1 1 200px;  max-width: 600px; max-width: 80%;">
       <div class="card secondary">
         <p style="font-size: 1.8rem">
           <b><u>Welcome to my portfolio.</u></b>
@@ -52,17 +52,17 @@
       </div>
     </div>
 
-    <div class="card secondary" style="flex: 1 1 300px; max-width: 400px;">
+    <div class="card secondary" style="flex: 1 1 300px; max-width: 400px; min-width: 300px;">
       <img
         src="/img/pfp.png"
         alt="Profile"
         style="
-        width: 100%; 
-        height: auto; 
-        border-radius: 32px; 
-        border: 10px var(--color-txt-highlight) solid;
-        object-fit: cover;
-      "
+          width: 100%; 
+          height: auto; 
+          border-radius: 32px; 
+          border: 10px var(--color-txt-highlight) solid;
+          object-fit: cover;
+        "
       />
     </div>
   </div>

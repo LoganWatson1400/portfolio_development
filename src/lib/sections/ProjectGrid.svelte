@@ -12,7 +12,6 @@
       row-gap: 32px;
       column-gap: 16px;
       justify-content: space-evenly;
-      margin: 32px;
     "
   >
     {#if projects.length}

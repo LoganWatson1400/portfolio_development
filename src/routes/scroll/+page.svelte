@@ -11,9 +11,7 @@
 
 <main
   style="
-    width: 80%; 
-    justify-self: center;
-    justify-items: center;
+    width: 100%; 
   "
 >
   <section id="welcome"><Welcome /></section>
@@ -21,7 +19,7 @@
   <section id="contact"><Contact /></section>
   <section id="skills"><Skills skills={data?.skills ?? []} /></section>
   <section id="experience"><Experience /></section>
-  <section id="projectgrid" style="padding: 0px 10%;">
+  <section id="projectgrid" style="padding: 0px 5vw;">
     <ProjectGrid projects={data?.projects ?? []} />
   </section>
 </main>
@@ -29,7 +27,7 @@
 <style>
   section {
     min-height: 100vh;
-    min-width: 100vw;
     width: 100%;
+    min-width: 0;
   }
 </style>
