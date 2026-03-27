@@ -11,7 +11,7 @@
 
 <main
   style="
-    width: 90%; 
+    width: 80%; 
     justify-self: center;
     justify-items: center;
   "
