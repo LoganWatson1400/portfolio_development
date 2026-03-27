@@ -4,7 +4,7 @@
     class="flex"
     style="flex-wrap: wrap; justify-content: center; padding: 0px 5%;"
   >
-    <div class="flex col" style="flex: 1 1 200px;  max-width: 600px; max-width: 80%;">
+    <div class="flex col" style="flex: 1 1 300px;  max-width: 600px; max-width: 80%;">
       <div class="card secondary">
         <p style="font-size: 1.8rem">
           <b><u>Welcome to my portfolio.</u></b>
@@ -28,12 +28,15 @@
         </ul>
         <p style="font-size: clamp(1rem, 2vw, 1.4rem); margin-top: 8px;">
           <br/>You can also click the commands on the panel to the right.<br/><br/>
-          Alternatively, you can click the button at the top to view a continuously scrolling page.
+          Alternatively, you can click the button at the top to view a continuously scrolling page.<br/>
+          <strong class="highlight">
+            (Recomened For Mobile)
+          </strong>
         </p>
       </div>
 
       <div class="card secondary flex" style="gap: 24px; flex-wrap: wrap;">
-        <div class="flex col" style="flex: 2; min-width: 200px;">
+        <div class="flex col" style="flex: 2;">
           <h1 style="font-size: clamp(2rem, 4vw, 3.2rem);">
             Logan<br />Watson
           </h1>
