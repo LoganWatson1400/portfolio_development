@@ -12,7 +12,7 @@ export default class Whoami extends Command {
   execute() {
     return [
       "Name:     Logan Watson",
-      "Role:     Full Stack Developer",
+      "Role:     Software Engineer",
       "",
       "Type 'ls' to see available pages or 'help' for commands.",
     ].join("\n");
