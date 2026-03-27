@@ -3,8 +3,9 @@
   import "../app.css";
   import { tick, onMount } from "svelte";
   import { slide, fade } from "svelte/transition";
-  import { afterNavigate } from "$app/navigation";
-  import CommandTable from "../components/commandTable.svelte";
+  import { afterNavigate, goto } from "$app/navigation";
+  import { page } from "$app/stores";
+  import CommandTable from "$lib/components/CommandTable.svelte";
   import { terminalValue, terminalHistory } from "$lib/stores.js";
   import { Terminal } from "$lib/terminal/terminal.js";
 
@@ -14,6 +15,8 @@
 
   let terminal;
   let currentPath = $state("/");
+
+  const isScroll = $derived($page.url.pathname === "/scroll");
 
   // ── terminal history visibility state ──────────────────────────────────────
   let pinned = $state(false); // user toggled "keep open"
@@ -121,11 +124,19 @@
     <div
       class="flex"
       style="
-        justify-content: space-between;
         font-size: 1vw;
       "
     >
       <h1>Logan Watson:</h1>
+      <div style="flex: 2;"></div>
+      <button
+        class="btn"
+        style="padding: 0.1vh 4vw; font-size: inherit;"
+        onclick={() => goto(isScroll ? "/welcome" : "/scroll")}
+      >
+        {isScroll ? "Go To Terminal" : "Go To Continuous Scroll"}
+      </button>
+      <div style="flex: 3;"></div>
       <h1>{currentPath}</h1>
     </div>
     <div class="divider"></div>
@@ -156,6 +167,7 @@
         </div>
 
         <!--── terminal history panel ───────────────────────────────────────-->
+        {#if !isScroll}
         {#if $terminalHistory.length > 0 && showHistory}
           <div
             class="terminal"
@@ -226,9 +238,11 @@
             {/each}
           </div>
         {/if}
+        {/if}
       </div>
 
       <!-- terminal input -->
+      {#if !isScroll}
       <div
         class="terminal input flex"
         role="region"
@@ -256,9 +270,11 @@
           onkeydown={handleKey}
         />
       </div>
+      {/if}
     </div>
 
     <!-- command table -->
+    {#if !isScroll}
     <div
       class="box"
       style="
@@ -278,5 +294,6 @@
         }}
       />
     </div>
+    {/if}
   </div>
 </div>
