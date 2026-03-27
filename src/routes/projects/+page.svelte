@@ -1,20 +1,7 @@
 <script>
-  import Project from "../../components/project.svelte";
+  import ProjectGrid from '$lib/sections/ProjectGrid.svelte';
 
-  let { data } = $props();
+  export let data;
 </script>
 
-<div
-  style="
-  display: inline-flex;
-  flex-wrap: wrap;
-  row-gap: 32px;
-  column-gap: 16px;
-  justify-content: space-evenly;
-  margin: 32px;
-  "
->
-  {#each data.projects as project}
-    <Project {project} />
-  {/each}
-</div>
+<ProjectGrid projects={data.projects} />

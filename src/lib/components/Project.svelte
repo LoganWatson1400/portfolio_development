@@ -13,8 +13,8 @@
 
   const terminal = new Terminal();
 
-  const slug = project.route.replace(/^projects\//, "");
-  const href = project.route !== "" ? `/projects/${slug}` : null;
+  const slug = $derived((project.route ?? "").replace(/^projects\//, ""));
+  const href = $derived(project.route ? `/projects/${slug}` : null);
 
   async function navigate() {
     if (!href) return;
