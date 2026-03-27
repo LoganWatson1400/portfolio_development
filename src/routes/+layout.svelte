@@ -131,7 +131,7 @@
       <div style="flex: 2;"></div>
       <button
         class="btn"
-        style="padding: 0.1vh 4vw; font-size: inherit;"
+        style="padding: 2vh 4vw; font-size: inherit;"
         onclick={() => goto(isScroll ? "/welcome" : "/scroll")}
       >
         {isScroll ? "Go To Terminal" : "Go To Continuous Scroll"}
