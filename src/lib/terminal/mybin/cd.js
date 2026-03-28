@@ -13,7 +13,8 @@ export default class Cd extends Command {
   async execute({ terminal, args }) {
     if (args.length === 0) return this.usage;
 
-    const target = args[0].replace(/\/$/, '');
+    var target = args[0].replace(/\/$/, '');
+    target = target == ""?'/':target;
 
     if (["~", "/"].includes(target)) {
       terminal.clearPath();
