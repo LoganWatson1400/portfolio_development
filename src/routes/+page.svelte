@@ -1,19 +1,25 @@
 <script>
-  import { page } from '$app/state';
+  import { page } from "$app/state";
   import ascii from "$lib/data/ascii.json";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { goto } from "$app/navigation";
 
   let chars = [];
   let maxCol = 0;
-
-  // Manual scaling factor for character width (in vw)
   let scale = 0.4;
-
-  let lineHeightFactor = 1.5; // e.g., 2 means each line is twice the scale
-
+  let lineHeightFactor = 1.5;
   const minSleep = 1;
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  let controller;
+
+  function sleep(ms, signal) {
+    return new Promise((resolve, reject) => {
+      const id = setTimeout(resolve, ms);
+      signal?.addEventListener("abort", () => {
+        clearTimeout(id);
+        reject(new DOMException("aborted", "AbortError"));
+      });
+    });
+  }
 
   function shuffle(arr) {
     const a = [...arr];
@@ -24,7 +30,7 @@
     return a;
   }
 
-  async function merge(arr, start, mid, end) {
+  async function merge(arr, start, mid, end, signal) {
     const merged = [];
     let i = start,
       j = mid;
@@ -35,58 +41,58 @@
     while (i < mid) merged.push(arr[i++]);
     while (j < end) merged.push(arr[j++]);
     for (let k = 0; k < merged.length; k++) arr[start + k] = merged[k];
-
     if (end - start >= 6) {
       chars = [...arr];
-      await sleep(minSleep);
+      await sleep(minSleep, signal);
     }
   }
 
-  async function mergeSort(arr, start = 0, end = arr.length) {
+  async function mergeSort(arr, start = 0, end = arr.length, signal) {
     if (end - start <= 1) return;
-
     const mid = Math.floor((start + end) / 2);
-    await mergeSort(arr, start, mid);
-    await mergeSort(arr, mid, end);
-
-    await merge(arr, start, mid, end);
+    await mergeSort(arr, start, mid, signal);
+    await mergeSort(arr, mid, end, signal);
+    await merge(arr, start, mid, end, signal);
   }
 
-  async function run() {
+  async function run(signal) {
     maxCol = Math.max(...ascii.map((a) => a.col)) + 1;
     chars = shuffle([...ascii]);
     chars = [...chars];
-    await sleep(minSleep);
-
+    await sleep(minSleep, signal);
     const n = chars.length;
     const quarter = Math.floor(n / 4);
-
     await Promise.all([
-      mergeSort(chars, 0, quarter),
-      mergeSort(chars, quarter, 2 * quarter),
-      mergeSort(chars, 2 * quarter, 3 * quarter),
-      mergeSort(chars, 3 * quarter, n),
+      mergeSort(chars, 0, quarter, signal),
+      mergeSort(chars, quarter, 2 * quarter, signal),
+      mergeSort(chars, 2 * quarter, 3 * quarter, signal),
+      mergeSort(chars, 3 * quarter, n, signal),
     ]);
 
-    await sleep(300);
+    await sleep(300, signal);
     await Promise.all([
-      merge(chars, 0, quarter, 2 * quarter),
-      merge(chars, 2 * quarter, 3 * quarter, n),
+      merge(chars, 0, quarter, 2 * quarter, signal),
+      merge(chars, 2 * quarter, 3 * quarter, n, signal),
     ]);
 
-    await sleep(300);
-    await merge(chars, 0, 2 * quarter, n);
+    await sleep(300, signal);
+    await merge(chars, 0, 2 * quarter, n, signal);
 
     const beginEl = document.getElementById("begin");
     if (beginEl) beginEl.textContent = "Welcome To My Portfolio";
 
-    await sleep(5000);
-    if (page.url.pathname === "/") {
-      goto("/welcome");
-    }
+    await sleep(5000, signal);
+    goto("/welcome");
   }
 
-  onMount(run);
+  onMount(() => {
+    controller = new AbortController();
+    run(controller.signal).catch((e) => {
+      if (e.name !== "AbortError") throw e;
+    });
+  });
+
+  onDestroy(() => controller?.abort());
 </script>
 
 <div
@@ -121,7 +127,6 @@
       </span>
     {/each}
   </div>
-
   <div
     id="begin"
     style="margin-top: 20px; font-size: 24px; color: #fff; text-align: center;"
