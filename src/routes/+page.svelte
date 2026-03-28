@@ -1,4 +1,5 @@
 <script>
+  import { page } from '$app/state';
   import ascii from "$lib/data/ascii.json";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
@@ -7,7 +8,7 @@
   let maxCol = 0;
 
   // Manual scaling factor for character width (in vw)
-  let scale = 0.4; 
+  let scale = 0.4;
 
   let lineHeightFactor = 1.5; // e.g., 2 means each line is twice the scale
 
@@ -25,7 +26,8 @@
 
   async function merge(arr, start, mid, end) {
     const merged = [];
-    let i = start, j = mid;
+    let i = start,
+      j = mid;
     while (i < mid && j < end) {
       if (arr[i].index < arr[j].index) merged.push(arr[i++]);
       else merged.push(arr[j++]);
@@ -79,7 +81,9 @@
     if (beginEl) beginEl.textContent = "Welcome To My Portfolio";
 
     await sleep(5000);
-    goto("/welcome");
+    if (page.url.pathname === "/") {
+      goto("/welcome");
+    }
   }
 
   onMount(run);
@@ -96,15 +100,19 @@
       --line-height: {lineHeightFactor};
       position: relative;
       width: calc(var(--scale) * {maxCol});
-      height: calc(var(--scale) * var(--line-height) * {Math.ceil(chars.length / maxCol)});
+      height: calc(var(--scale) * var(--line-height) * {Math.ceil(
+      chars.length / maxCol,
+    )});
     "
   >
     {#each chars as c, i}
       <span
         class="pixel"
         style="
-          left: calc(var(--scale) * {(i % maxCol)});
-          top: calc(var(--scale) * var(--line-height) * {Math.floor(i / maxCol)});
+          left: calc(var(--scale) * {i % maxCol});
+          top: calc(var(--scale) * var(--line-height) * {Math.floor(
+          i / maxCol,
+        )});
           color: {c.color};
           font-size: calc(var(--scale) * var(--line-height));
         "
