@@ -1,0 +1,62 @@
+[ 
+  {
+    "skill": "Full Stack",
+    "percent": 24
+  },
+  {
+    "skill": "HTML",
+    "percent": 97
+  },
+  {
+    "skill": "Frontend",
+    "percent": 32
+  },
+  {
+    "skill": "CSS",
+    "percent": 97
+  },
+  {
+    "skill": "JavaScript",
+    "percent": 83
+  },
+  {
+    "skill": "C++",
+    "percent": 19
+  },
+  {
+    "skill": "Machine Learning",
+    "percent": 84
+  },
+  {
+    "skill": "Game Developer",
+    "percent": 64
+  },
+  {
+    "skill": "Backend",
+    "percent": 17
+  },
+  {
+    "skill": "Git and GitHub",
+    "percent": 62
+  },
+  {
+    "skill": "AI Engineer",
+    "percent": 17
+  },
+  {
+    "skill": "Computer Science",
+    "percent": 52
+  },
+  {
+    "skill": "Python",
+    "percent": 51
+  },
+  {
+    "skill": "Java",
+    "percent": 52
+  },
+  {
+    "skill": "Data Structures & Algorithms",
+    "percent": 66
+  }
+]

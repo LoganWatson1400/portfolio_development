@@ -1,14 +1,10 @@
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-auto';
 
 const config = {
   kit: {
-    adapter: adapter({
-      pages: 'build',
-      assets: 'build',
-      fallback: 'index.html'  // <-- SPA mode
-    }),
+    adapter: adapter(),
     paths: {
-      base: '' // root
+      base: ''
     }
   }
 };
