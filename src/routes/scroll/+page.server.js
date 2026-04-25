@@ -1,9 +1,9 @@
-import { getRoadmapProgress } from "$lib/server/roadmap.js";
 import { getProjects } from "$lib/server/projects.js";
+import skills from "$lib/data/skills.json";
 
 export async function load() {
   return {
-    skills: await getRoadmapProgress("loganwatson"),
+    skills,
     projects: getProjects()
   };
 }
