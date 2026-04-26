@@ -61,5 +61,14 @@
     "image_alt": "Brady Workplace Safety AI Img",
     "tags": ["Team", "React", "TypeScript", "Python", "TensorFlow", "Keras", "Node.js", "Expo", "Machine Learning", "Computer Vision"],
     "link": "https://github.com/LoganWatson1400/Brady_Hackathon"
+  },
+  {
+    "title": "FlashCardRoguelike",
+    "route": "flashcardroguelike",
+    "description": "I developed an educational Roguelike flashcard game in Godot as part of my Computer Science capstone, working with a team of five others. The project combines gameplay and learning by having players answer flashcards to progress through a dungeon with increasing difficulty over time. I implemented core systems including a player inventory and item system, and also took responsibility for prioritizing and reviewing teammates’ code to maintain quality and consistency across the project.",
+    "image": "/img/flashcardroguelike.png",
+    "image_alt": "Flashcard Roguelike Main Menu",
+    "tags": ["Team", "Godot", "C#", "Game Development", "3D Graphics"],
+    "link": "https://github.com/LTEmmer/Group13Capstone"
   }
 ]
