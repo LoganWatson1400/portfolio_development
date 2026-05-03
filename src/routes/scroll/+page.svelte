@@ -17,7 +17,6 @@
   <section id="welcome"><Welcome /></section>
   <section id="about"><About /></section>
   <section id="contact"><Contact /></section>
-  <section id="skills"><Skills skills={data?.skills ?? []} /></section>
   <section id="experience"><Experience /></section>
   <section id="projectgrid" style="padding: 0px 5vw;">
     <ProjectGrid projects={data?.projects ?? []} />
